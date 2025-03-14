@@ -25,6 +25,8 @@ public class Complex{
     public boolean isNull() {
         return Math.abs(this.reNum) < EPSILON && Math.abs(this.imNum) < EPSILON;
     }
+    public boolean isPureReal(){return (!this.isNull()) && (Math.abs(this.imNum) < EPSILON);}
+    public boolean isPureImaginary(){return (!this.isNull()) && (Math.abs(this.reNum) < EPSILON);}
 
     private static Random rand = new Random();
 
@@ -78,15 +80,15 @@ public class Complex{
         // Format string for real and imaginary parts
         String format = "%." + precision + "f";
 
-        if (Math.abs(imNum) < EPSILON) {
+        if (this.isPureReal()) {
             // Pure real number
             System.out.printf(format, reNum);
-        } else if (Math.abs(reNum) < EPSILON) {
+        } else if (this.isPureImaginary()) {
             // Pure imaginary number
             if (Math.abs(imNum) == 1) {
-                System.out.print(imNum > 0 ? "i" : "-i");
+                System.out.print(imNum > EPSILON ? "i" : "-i");
             } else {
-                System.out.printf(imNum > 0 ? "i%s" : "-i%s", String.format(format, Math.abs(imNum)));
+                System.out.printf(imNum > EPSILON ? "i%s" : "-i%s", String.format(format, Math.abs(imNum)));
             }
         } else {
             // General complex number
@@ -213,6 +215,16 @@ public class Complex{
                     : new Complex(0, getRandomDouble(minLimit, maxLimit));
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Complex complex = (Complex) obj;
+        return Double.compare(complex.reNum, reNum) == 0 &&
+                Double.compare(complex.imNum, imNum) == 0;
+    }
+
 
     // Constants
     static final double EPSILON = 1e-10;

@@ -102,13 +102,20 @@ public class QuadraticEquation {
 
         // Print -sum * x term
         if (!sum.isNull()) {
-            boolean isNegative = sum.reNum < 0.0 || (sum.reNum == 0.0 && sum.imNum < 0.0);
-            Complex absSum = isNegative ? ComplexMath.multiply(sum, Complex.NEG_ONE) : sum;
+            if(sum.equals(Complex.ONE)){
+                System.out.print(" + x");
+            }
+            else if(sum.equals(Complex.NEG_ONE)){
+                System.out.print(" - x");
+            }else{
+                boolean isNegative = sum.reNum < 0.0 || (sum.reNum == 0.0 && sum.imNum < 0.0);
+                Complex absSum = isNegative ? ComplexMath.multiply(sum, Complex.NEG_ONE) : sum;
 
-            System.out.print(isNegative ? " + " : " - ");
-            System.out.print("(");
-            absSum.printComplex(precision);
-            System.out.print(")x ");
+                System.out.print(isNegative ? " + " : " - ");
+                System.out.print("(");
+                absSum.printComplex(precision);
+                System.out.print(")x ");
+            }
         }
 
         // Print +product term
@@ -138,19 +145,34 @@ public class QuadraticEquation {
     }
 
     public static void printEquation(Complex a, Complex b, Complex c, int precision) {
-        System.out.print("(");
-        a.printComplex(precision);
-        System.out.print(")x²");
+
+        if(a.equals(Complex.ONE)){
+            System.out.print("x²");
+        } else if (a.equals(Complex.NEG_ONE)) {
+            System.out.print("-x²");
+        } else{
+            System.out.print("(");
+            a.printComplex(precision);
+            System.out.print(")x²");
+        }
 
         // Print b * x term
         if (!b.isNull()) {
-            boolean isNegative = b.reNum < 0.0 || (b.reNum == 0.0 && b.imNum < 0.0);
-            Complex absB = isNegative ? ComplexMath.multiply(b, Complex.NEG_ONE) : b;
+            if(b.equals(Complex.ONE)){
+                System.out.print(" + x");
+            }
+            else if(b.equals(Complex.NEG_ONE)){
+                System.out.print(" - x");
+            }
+            else{
+                boolean isNegative = b.reNum < 0.0 || (b.reNum == 0.0 && b.imNum < 0.0);
+                Complex absB = isNegative ? ComplexMath.multiply(b, Complex.NEG_ONE) : b;
 
-            System.out.print(isNegative ? " - " : " + ");
-            System.out.print("(");
-            absB.printComplex(precision);
-            System.out.print(")x ");
+                System.out.print(isNegative ? " - " : " + ");
+                System.out.print("(");
+                absB.printComplex(precision);
+                System.out.print(")x ");
+            }
         }
 
         // Print c term
@@ -164,7 +186,7 @@ public class QuadraticEquation {
             System.out.print(")");
         }
 
-        System.out.println(" = 0");
+        System.out.print(" = 0");
     }
 
     public static void printEquation(Complex a, Complex b, Complex c){
