@@ -3,6 +3,10 @@ import java.util.Random;
 public class Complex{
     protected double reNum, imNum;
 
+    public enum Type {
+        RE, IM, COMP;
+    }
+
     Complex(){
         this(0.0, 0.0);
     }
@@ -27,16 +31,6 @@ public class Complex{
     }
     public boolean isPureReal(){return (!this.isNull()) && (Math.abs(this.imNum) < EPSILON);}
     public boolean isPureImaginary(){return (!this.isNull()) && (Math.abs(this.reNum) < EPSILON);}
-
-    private static Random rand = new Random();
-
-    private static double getRandomDouble(double min, double max) {
-        return min + (max - min) * rand.nextDouble();
-    }
-
-    private static int getRandomInt(int min, int max) {
-        return rand.nextInt(max - min + 1) + min;
-    }
 
     public void setComplex(double a, double b) {
         if (Double.isNaN(a) || Double.isNaN(b)) {
@@ -190,6 +184,16 @@ public class Complex{
 
         double modSqr = this.reNum*this.reNum + this.imNum*this.imNum;
         return new Complex(reNum / modSqr, -imNum / modSqr);
+    }
+
+    private static double getRandomDouble(double min, double max) {
+        Random rand = new Random();
+        return min + (max - min) * rand.nextDouble();
+    }
+
+    private static int getRandomInt(int min, int max) {
+        Random rand = new Random();
+        return rand.nextInt(max - min + 1) + min;
     }
 
     // Random complex number with both real and imaginary parts

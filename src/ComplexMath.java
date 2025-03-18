@@ -1,4 +1,3 @@
-
 public final class ComplexMath {
 
     // Private constructor prevents object creation
@@ -147,7 +146,6 @@ public final class ComplexMath {
         if (!isNumImaginary) {
             return ln(num);
         }
-
         return new Complex(Math.log(Math.abs(num)), num > 0 ? Math.PI / 2 : -Math.PI / 2);
     }
 
@@ -242,9 +240,6 @@ public final class ComplexMath {
         }
         else if(base.isNull()){
             return new Complex();
-        }
-        else if(areEqual(base, Complex.ONE)){
-            return expComplex(multiply(pow, ln(2*Math.PI, true)));
         }
         return expComplex(multiply(pow, ln(base)));
     }
