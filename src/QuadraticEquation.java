@@ -40,7 +40,7 @@ public class QuadraticEquation {
         this.c = c;
 
         Complex discriminant = getDiscriminant(a, b, c);
-        Complex sqrtDiscriminant = ComplexMath.sqrt(discriminant);
+        Complex sqrtDiscriminant = ComplexPower.sqrt(discriminant);
         Complex negB = ComplexMath.multiply(Complex.NEG_ONE, b);
         Complex denominator = ComplexMath.multiply(2, a);
 
@@ -84,7 +84,7 @@ public class QuadraticEquation {
             throw new ArithmeticException("Coefficient 'a' cannot be 0.");
         }
         Complex discriminant = getDiscriminant(a, b, c);
-        Complex sqrtDiscriminant = ComplexMath.sqrt(discriminant);
+        Complex sqrtDiscriminant = ComplexPower.sqrt(discriminant);
         Complex negB = ComplexMath.multiply(Complex.NEG_ONE, b);
         Complex denominator = ComplexMath.multiply(2, a);
 

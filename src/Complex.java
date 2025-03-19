@@ -1,11 +1,8 @@
+import java.util.Objects;
 import java.util.Random;
 
 public class Complex{
     protected double reNum, imNum;
-
-    public enum Type {
-        RE, IM, COMP;
-    }
 
     Complex(){
         this(0.0, 0.0);
@@ -69,6 +66,7 @@ public class Complex{
     public void printComplex(int precision) {
         if (this.isNull()) {
             System.out.print("0");
+            return;
         }
 
         // Format string for real and imaginary parts
@@ -186,13 +184,13 @@ public class Complex{
         return new Complex(reNum / modSqr, -imNum / modSqr);
     }
 
+    private static final Random rand = new Random();
+
     private static double getRandomDouble(double min, double max) {
-        Random rand = new Random();
         return min + (max - min) * rand.nextDouble();
     }
 
     private static int getRandomInt(int min, int max) {
-        Random rand = new Random();
         return rand.nextInt(max - min + 1) + min;
     }
 
@@ -225,8 +223,14 @@ public class Complex{
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Complex complex = (Complex) obj;
-        return Double.compare(complex.reNum, reNum) == 0 &&
-                Double.compare(complex.imNum, imNum) == 0;
+        return Math.abs(complex.reNum - reNum) < EPSILON &&
+                Math.abs(complex.imNum - imNum) < EPSILON;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(reNum, imNum);
     }
 
 

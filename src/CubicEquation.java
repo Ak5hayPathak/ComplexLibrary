@@ -7,7 +7,7 @@ public class CubicEquation {
         this.root2 = root2;
         this.root3 = root3;
 
-        this.a = new Complex(1, 0);
+        this.a = Complex.ONE;
         this.b = ComplexMath.multiply(Complex.NEG_ONE,
                 ComplexMath.add(ComplexMath.add(root1, root2), root3)
         );
@@ -70,12 +70,12 @@ public class CubicEquation {
         Complex u;
         Complex v;
         if (discriminant.isNull()) {
-            u = ComplexMath.cbrt(negHalfQ);
+            u = ComplexPower.cbrt(negHalfQ);
             v = u; // Both roots are the same
         } else {
-            Complex sqrtDiscriminant = ComplexMath.sqrt(discriminant);
-            u = ComplexMath.cbrt(ComplexMath.subtract(negHalfQ, sqrtDiscriminant));
-            v = ComplexMath.cbrt(ComplexMath.add(negHalfQ, sqrtDiscriminant));
+            Complex sqrtDiscriminant = ComplexPower.sqrt(discriminant);
+            u = ComplexPower.cbrt(ComplexMath.subtract(negHalfQ, sqrtDiscriminant));
+            v = ComplexPower.cbrt(ComplexMath.add(negHalfQ, sqrtDiscriminant));
         }
 
         Complex bOver3a = ComplexMath.divide(b, ComplexMath.multiply(3, a));
@@ -131,14 +131,14 @@ public class CubicEquation {
             throw new ArithmeticException("Coefficient 'a' cannot be zero for a cubic equation.");
         }
 
-        Complex a2 = ComplexMath.power(a, 2); // a^2
+        Complex a2 = ComplexPower.power(a, 2); // a^2
         Complex a3 = ComplexMath.multiply(a, a2); // a^3
 
         // p = (3ac - b^2) / (3a^2)
         Complex p = ComplexMath.divide(
                 ComplexMath.subtract(
                         ComplexMath.multiply(3.0, ComplexMath.multiply(a, c)),
-                        ComplexMath.power(b, 2.0)
+                        ComplexPower.power(b, 2.0)
                 ),
                 ComplexMath.multiply(3.0, a2) // Directly compute denominator
         );
@@ -147,7 +147,7 @@ public class CubicEquation {
         Complex q = ComplexMath.divide(
                 ComplexMath.add(
                         ComplexMath.subtract(
-                                ComplexMath.multiply(2.0, ComplexMath.power(b, 3)), // 2b^3
+                                ComplexMath.multiply(2.0, ComplexPower.power(b, 3)), // 2b^3
                                 ComplexMath.multiply(9.0, ComplexMath.multiply(a, ComplexMath.multiply(b, c))) // 9abc
                         ),
                         ComplexMath.multiply(27.0, ComplexMath.multiply(a2, d)) // 27a^2d
@@ -161,8 +161,8 @@ public class CubicEquation {
     public static Complex getDiscriminant(Complex a, Complex b, Complex c, Complex d){
         Complex[] Val = getDepressedCoffs(a, b, c, d);
         return ComplexMath.add(
-                ComplexMath.power(ComplexMath.divide(Val[1], 2.0), 2), // q^2 / 4
-                ComplexMath.power(ComplexMath.divide(Val[0], 3.0), 3)  // p^3 / 27
+                ComplexPower.power(ComplexMath.divide(Val[1], 2.0), 2), // q^2 / 4
+                ComplexPower.power(ComplexMath.divide(Val[0], 3.0), 3)  // p^3 / 27
         );
     }
 
@@ -179,12 +179,12 @@ public class CubicEquation {
         Complex u;
         Complex v;
         if (discriminant.isNull()) {
-            u = ComplexMath.cbrt(negHalfQ);
+            u = ComplexPower.cbrt(negHalfQ);
             v = u; // Both roots are the same
         } else {
-            Complex sqrtDiscriminant = ComplexMath.sqrt(discriminant);
-            u = ComplexMath.cbrt(ComplexMath.subtract(negHalfQ, sqrtDiscriminant));
-            v = ComplexMath.cbrt(ComplexMath.add(negHalfQ, sqrtDiscriminant));
+            Complex sqrtDiscriminant = ComplexPower.sqrt(discriminant);
+            u = ComplexPower.cbrt(ComplexMath.subtract(negHalfQ, sqrtDiscriminant));
+            v = ComplexPower.cbrt(ComplexMath.add(negHalfQ, sqrtDiscriminant));
         }
 
         Complex bOver3a = ComplexMath.divide(b, ComplexMath.multiply(3, a));
