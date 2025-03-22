@@ -28,6 +28,13 @@ public class Complex{
     }
     public boolean isPureReal(){return (!this.isNull()) && (Math.abs(this.imNum) < EPSILON);}
     public boolean isPureImaginary(){return (!this.isNull()) && (Math.abs(this.reNum) < EPSILON);}
+    public boolean isGreaterThan(Complex other) {
+        return this.getMod() > other.getMod();
+    }
+
+    public boolean isLessThan(Complex other) {
+        return this.getMod() < other.getMod();
+    }
 
     public void setComplex(double a, double b) {
         if (Double.isNaN(a) || Double.isNaN(b)) {
@@ -63,6 +70,11 @@ public class Complex{
         }
     }
 
+    public void inputComplex(){
+        Complex num = inputComplex("");
+        this.reNum = num.reNum;
+        this.imNum = num.imNum;
+    }
     public void printComplex(int precision) {
         if (this.isNull()) {
             System.out.print("0");
@@ -169,7 +181,6 @@ public class Complex{
     public double getStandardAngleToDegrees() {
         return Math.toDegrees(this.getStandardAngle());
     }
-
 
     public Complex getConjugate(){
         return new Complex(this.reNum, -this.imNum);

@@ -62,49 +62,31 @@ public class CubicEquation {
         this.c = c;
         this.d = d;
 
-        Complex[] depressed = getDepressedCoffs(a, b, c, d);
-        Complex discriminant = getDiscriminant(a, b, c, d);
-
-        Complex negHalfQ = ComplexMath.multiply(Complex.NEG_ONE, ComplexMath.divide(depressed[1], 2));
-
-        Complex u;
-        Complex v;
-        if (discriminant.isNull()) {
-            u = ComplexPower.cbrt(negHalfQ);
-            v = u; // Both roots are the same
-        } else {
-            Complex sqrtDiscriminant = ComplexPower.sqrt(discriminant);
-            u = ComplexPower.cbrt(ComplexMath.subtract(negHalfQ, sqrtDiscriminant));
-            v = ComplexPower.cbrt(ComplexMath.add(negHalfQ, sqrtDiscriminant));
+        Complex[] roots = new Complex[3];
+        if (this.b.isNull()){
+            if(this.c.isNull()){
+                roots[0] = ComplexPower.cbrt(ComplexMath.multiply(Complex.NEG_ONE, ComplexMath.divide(d, a)));
+                roots[1] = ComplexMath.multiply(Complex.OMEGA, roots[0]);
+                roots[2] = ComplexMath.multiply(Complex.OMEGA_SQR, roots[0]);
+            }
+            else{
+                roots = getDepressedRoots(a, c, d);
+            }
+        }
+        else{
+            Complex[] depressed = getDepressedCoffs(a, b, c, d);
+            Complex[] UV = getUV(depressed[0], depressed[1]);
+            roots = cardanoRoots(a, b, UV[0], UV[1]);
         }
 
-        Complex bOver3a = ComplexMath.divide(b, ComplexMath.multiply(3, a));
-        this.root1 = ComplexMath.subtract(
-                ComplexMath.add(u, v),
-                bOver3a
-        );
-
-        this.root2 = ComplexMath.subtract(
-                ComplexMath.add(
-                        ComplexMath.multiply(Complex.OMEGA, u),
-                        ComplexMath.multiply(Complex.OMEGA_SQR, v)
-                ),
-                bOver3a
-        );
-
-        this.root3 = ComplexMath.subtract(
-                ComplexMath.add(
-                        ComplexMath.multiply(Complex.OMEGA_SQR, u),
-                        ComplexMath.multiply(Complex.OMEGA, v)
-                ),
-                bOver3a
-        );
+        this.root1 = roots[0];
+        this.root2 = roots[1];
+        this.root3 = roots[2];
     }
 
     CubicEquation(double a, double b, double c, double d){
         this(new Complex(a, 0), new Complex(b, 0), new Complex(c, 0), new Complex(d, 0));
     }
-
 
     public Complex getRoot1() {return this.root1;}
     public Complex getRoot2() {return this.root2;}
@@ -158,11 +140,98 @@ public class CubicEquation {
         return new Complex[]{p, q};
     }
 
+    protected static Complex[] getUV(Complex p, Complex q){
+        Complex discriminant = getDiscriminant(p, q);
+        Complex sqrtDiscriminant = ComplexPower.sqrt(discriminant);
+        Complex negHalfQ = ComplexMath.multiply(Complex.NEG_ONE, ComplexMath.divide(q, 2));
+        Complex u = ComplexPower.cbrt(ComplexMath.subtract(negHalfQ, sqrtDiscriminant));
+        Complex v = ComplexPower.cbrt(ComplexMath.add(negHalfQ, sqrtDiscriminant));
+
+        return new Complex[]{u, v};
+    }
+
+    protected static Complex[] cardanoRoots(Complex a, Complex b, Complex u, Complex v){
+        Complex bOver3a = ComplexMath.divide(b, ComplexMath.multiply(3, a));
+        Complex[] roots = new Complex[3];
+        roots[0] = ComplexMath.subtract(
+                ComplexMath.add(u, v),
+                bOver3a
+        );
+
+        roots[1] = ComplexMath.subtract(
+                ComplexMath.add(
+                        ComplexMath.multiply(Complex.OMEGA, u),
+                        ComplexMath.multiply(Complex.OMEGA_SQR, v)
+                ),
+                bOver3a
+        );
+
+        roots[2] = ComplexMath.subtract(
+                ComplexMath.add(
+                        ComplexMath.multiply(Complex.OMEGA_SQR, u),
+                        ComplexMath.multiply(Complex.OMEGA, v)
+                ),
+                bOver3a
+        );
+
+        return roots;
+    }
+
+    public static Complex[] getDepressedRoots(Complex a, Complex c, Complex d){
+        Complex p = ComplexMath.divide(c, a);
+        Complex q =ComplexMath.divide(d, a);
+
+
+        Complex theta = ComplexTrigono.arcCos(ComplexMath.multiply(
+                            ComplexMath.divide(
+                                    ComplexMath.multiply(3.0, q),
+                                    ComplexMath.multiply(2.0, p)
+                            ),
+                            ComplexPower.sqrt(
+                                    ComplexMath.divideNumerator(-3.0, p)
+                            )
+                ));
+
+        Complex pTerm = ComplexMath.multiply(2.0, ComplexPower.sqrt(
+                                ComplexMath.divide(p, -3.0)
+                        ));
+
+        Complex[] roots = new Complex[3];
+
+        roots[0] = ComplexMath.multiply(
+                pTerm,
+                ComplexTrigono.cos(ComplexMath.divide(theta, 3.0))
+        );
+
+        roots[1] = ComplexMath.multiply(
+                pTerm,
+                ComplexTrigono.cos(ComplexMath.divide(
+                        ComplexMath.add(theta, 2*Math.PI),
+                        3.0))
+        );
+
+        roots[2] = ComplexMath.multiply(
+                pTerm,
+                ComplexTrigono.cos(ComplexMath.divide(
+                        ComplexMath.add(theta, 4*Math.PI),
+                        3.0))
+        );
+
+        return roots;
+    }
+
     public static Complex getDiscriminant(Complex a, Complex b, Complex c, Complex d){
         Complex[] Val = getDepressedCoffs(a, b, c, d);
         return ComplexMath.add(
                 ComplexPower.power(ComplexMath.divide(Val[1], 2.0), 2), // q^2 / 4
                 ComplexPower.power(ComplexMath.divide(Val[0], 3.0), 3)  // p^3 / 27
+        );
+    }
+
+    protected static Complex getDiscriminant(Complex p, Complex q){
+        return ComplexMath.add(
+                ComplexPower.power(ComplexMath.divide(q, 2.0), 2), // q^2 / 4
+                ComplexPower.power(ComplexMath.divide(p, 3.0), 3)  // p^3 / 27
         );
     }
 
@@ -230,25 +299,23 @@ public class CubicEquation {
         System.out.print(")" + term);
     }
 
-    public void printEquation(boolean isStandardEquation, int precision){
-        if(isStandardEquation){
-            printEquation(this.root1, this.root2, this.root3, precision);
-        }
-        else{
-            printEquation(this.a, this.b, this.c, this.d, precision);
-        }
+    public void printEquation(int precision){
+        printEquation(this.a, this.b, this.c, this.d, precision);
     }
 
-    public void printEquation(boolean isStandardEquation){
-        if(isStandardEquation){
-            printEquation(this.root1, this.root2, this.root3, 3);
-        }
-        else{
-            printEquation(this.a, this.b, this.c, this.d, 3);
-        }
+    public void printEquation(){
+        printEquation(this.a, this.b, this.c, this.d, 3);
     }
 
-    public static void printEquation(Complex root1, Complex root2, Complex root3, int precision){
+    public void printStandardEquation(int precision){
+        printStandardEquation(this.root1, this.root2, this.root3, precision);
+    }
+
+    public void printStandardEquation(){
+        printStandardEquation(this.root1, this.root2, this.root3, 3);
+    }
+
+    public static void printStandardEquation(Complex root1, Complex root2, Complex root3, int precision){
         CubicEquation Eq = new CubicEquation(root1, root2, root3);
 
         System.out.print("x³");
@@ -280,18 +347,18 @@ public class CubicEquation {
         }
     }
 
-    public static void printEquation(Complex root1, Complex root2, Complex root3){
-        printEquation(root1, root2, root3, 3);
+    public static void printStandardEquation(Complex root1, Complex root2, Complex root3){
+        printStandardEquation(root1, root2, root3, 3);
     }
 
-    public static void printEquation(double root1, double root2, double root3, int precision){
+    public static void printStandardEquation(double root1, double root2, double root3, int precision){
         CubicEquation Eq = new CubicEquation(root1, root2, root3);
-        Eq.printEquation(true, precision);
+        Eq.printStandardEquation(precision);
     }
 
-    public static void printEquation(double root1, double root2, double root3){
+    public static void printStandardEquation(double root1, double root2, double root3){
         CubicEquation Eq = new CubicEquation(root1, root2, root3);
-        Eq.printEquation(true, 3);
+        Eq.printStandardEquation(3);
     }
 
     public static void printEquation(Complex a, Complex b, Complex c, Complex d, int precision){
@@ -341,8 +408,7 @@ public class CubicEquation {
     }
 
     public static void printEquation(Complex a, Complex b, Complex c, Complex d){
-        CubicEquation Eq = new CubicEquation(a, b, c, d);
-        printEquation(Eq.root1, Eq.root2, Eq.root3, 3);
+        printEquation(a, b, c, d, 3);
     }
 
     public static CubicEquation randomEquation(double minLimit, double maxLimit, boolean isInteger){
@@ -351,13 +417,13 @@ public class CubicEquation {
                     Complex.getRandomComplex(minLimit, maxLimit, true),
                     Complex.getRandomComplex(minLimit, maxLimit, true)
                     ,Complex.getRandomComplex(minLimit, maxLimit, true)
-                    );
+            );
         }else{
             return new CubicEquation(Complex.getRandomComplex(minLimit, maxLimit, false),
                     Complex.getRandomComplex(minLimit, maxLimit, false),
                     Complex.getRandomComplex(minLimit, maxLimit, false)
                     ,Complex.getRandomComplex(minLimit, maxLimit, false)
-                    );
+            );
         }
     }
 
