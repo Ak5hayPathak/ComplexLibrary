@@ -103,22 +103,20 @@ public class QuadraticEquation {
         return solveEquation(new Complex(a, 0), new Complex(b, 0), new Complex(c, 0));
     }
 
-    public void printEquation(boolean isStandardEquation, int precision){
-        if(isStandardEquation){
-            printEquation(this.root1, this.root2, precision);
-        }
-        else{
-            printEquation(this.a, this.b, this.c, precision);
-        }
+    public void printEquation(int precision){
+        printEquation(this.a, this.b, this.c, precision);
     }
 
-    public void printEquation(boolean isStandardEquation){
-        if(isStandardEquation){
-            printEquation(this.root1, this.root2, 3);
-        }
-        else{
+    public void printEquation(){
             printEquation(this.a, this.b, this.c, 3);
-        }
+    }
+
+    public void printStandardEquation(int precision){
+        printStandardEquation(this.root1, this.root2, precision);
+    }
+
+    public void printStandardEquation(){
+        printStandardEquation(this.root1, this.root2, 3);
     }
 
     private static void printTerm(Complex num, String term, int precision){
@@ -131,7 +129,7 @@ public class QuadraticEquation {
         System.out.print(")" + term);
     }
 
-    public static void printEquation(Complex root1, Complex root2, int precision) {
+    public static void printStandardEquation(Complex root1, Complex root2, int precision) {
         QuadraticEquation Eq = new QuadraticEquation(root1, root2);
 
         System.out.print("x²");
@@ -152,16 +150,16 @@ public class QuadraticEquation {
         }
     }
 
-    public static void printEquation(Complex root1, Complex root2){
-        printEquation(root1, root2, 3);
+    public static void printStandardEquation(Complex root1, Complex root2){
+        printStandardEquation(root1, root2, 3);
     }
 
-    public static void printEquation(double root1, double root2, int precision){
-        printEquation(new Complex(root1, 0.0), new Complex(root2, 0.0), precision);
+    public static void printStandardEquation(double root1, double root2, int precision){
+        printStandardEquation(new Complex(root1, 0.0), new Complex(root2, 0.0), precision);
     }
 
-    public static void printEquation(double root1, double root2){
-        printEquation(new Complex(root1, 0.0), new Complex(root2, 0.0));
+    public static void printStandardEquation(double root1, double root2){
+        printStandardEquation(new Complex(root1, 0.0), new Complex(root2, 0.0));
     }
 
     public static void printEquation(Complex a, Complex b, Complex c, int precision) {
