@@ -195,40 +195,6 @@ public class Complex{
         return new Complex(reNum / modSqr, -imNum / modSqr);
     }
 
-    private static final Random rand = new Random();
-
-    private static double getRandomDouble(double min, double max) {
-        return min + (max - min) * rand.nextDouble();
-    }
-
-    private static int getRandomInt(int min, int max) {
-        return rand.nextInt(max - min + 1) + min;
-    }
-
-    // Random complex number with both real and imaginary parts
-    public static Complex getRandomComplex(double minLimit, double maxLimit, boolean isInteger) {
-        if (isInteger) {
-            return new Complex(getRandomInt((int) minLimit, (int) maxLimit),
-                    getRandomInt((int) minLimit, (int) maxLimit));
-        } else {
-            return new Complex(getRandomDouble(minLimit, maxLimit),
-                    getRandomDouble(minLimit, maxLimit));
-        }
-    }
-
-    // Random purely real or purely imaginary complex number
-    public static Complex getRandomComplex(double minLimit, double maxLimit, boolean isInteger, boolean isPureReal) {
-        if (isInteger) {
-            return isPureReal
-                    ? new Complex(getRandomInt((int) minLimit, (int) maxLimit), 0)
-                    : new Complex(0, getRandomInt((int) minLimit, (int) maxLimit));
-        } else {
-            return isPureReal
-                    ? new Complex(getRandomDouble(minLimit, maxLimit), 0)
-                    : new Complex(0, getRandomDouble(minLimit, maxLimit));
-        }
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

@@ -65,6 +65,19 @@ public class ComplexPower {
         return power(num, 1.0 / 3.0);
     }
 
+    public static Complex[] cbrtAll(Complex num) {
+        double r = Math.cbrt(num.getMod()); // Use Math.cbrt() for better precision
+        double theta = Math.atan2(num.imNum, num.reNum); // Compute argument (angle)
+
+        Complex[] roots = new Complex[3];
+        for (int k = 0; k < 3; k++) {
+            double angle = (theta + 2 * Math.PI * k) / 3.0;
+            roots[k] = new Complex(r * Math.cos(angle), r * Math.sin(angle));
+        }
+        return roots;
+    }
+
+
     // sqrt(ib)
     public static Complex sqrtImaginary(double val) {
         return sqrt(new Complex(0, val));

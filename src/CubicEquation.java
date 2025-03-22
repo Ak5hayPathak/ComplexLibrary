@@ -76,6 +76,7 @@ public class CubicEquation {
         else{
             Complex[] depressed = getDepressedCoffs(a, b, c, d);
             Complex[] UV = getUV(depressed[0], depressed[1]);
+
             roots = cardanoRoots(a, b, UV[0], UV[1]);
         }
 
@@ -108,7 +109,7 @@ public class CubicEquation {
         this.root3.printComplex();
     }
 
-    public static Complex[] getDepressedCoffs(Complex a, Complex b, Complex c, Complex d) {
+    protected static Complex[] getDepressedCoffs(Complex a, Complex b, Complex c, Complex d) {
         if (a.isNull()) {
             throw new ArithmeticException("Coefficient 'a' cannot be zero for a cubic equation.");
         }
@@ -140,41 +141,40 @@ public class CubicEquation {
         return new Complex[]{p, q};
     }
 
-    protected static Complex[] getUV(Complex p, Complex q){
+    protected static Complex[] getUV(Complex p, Complex q) {
         Complex discriminant = getDiscriminant(p, q);
         Complex sqrtDiscriminant = ComplexPower.sqrt(discriminant);
-        Complex negHalfQ = ComplexMath.multiply(Complex.NEG_ONE, ComplexMath.divide(q, 2));
-        Complex u = ComplexPower.cbrt(ComplexMath.subtract(negHalfQ, sqrtDiscriminant));
-        Complex v = ComplexPower.cbrt(ComplexMath.add(negHalfQ, sqrtDiscriminant));
+        Complex negHalfQ = ComplexMath.divide(q, -2);
 
-        return new Complex[]{u, v};
+        Complex[] uRoots = ComplexPower.cbrtAll(ComplexMath.subtract(negHalfQ, sqrtDiscriminant));
+        Complex[] vRoots = ComplexPower.cbrtAll(ComplexMath.add(negHalfQ, sqrtDiscriminant));
+
+        // Choose the pair (u, v) that satisfies uv = -p/3
+        for (Complex u : uRoots) {
+            for (Complex v : vRoots) {
+                if (ComplexMath.multiply(u, v).equals(ComplexMath.divide(p, -3))) {
+                    return new Complex[]{u, v};
+                }
+            }
+        }
+        throw new RuntimeException("No valid (u, v) pair found.");
     }
 
-    protected static Complex[] cardanoRoots(Complex a, Complex b, Complex u, Complex v){
+    protected static Complex[] cardanoRoots(Complex a, Complex b, Complex u, Complex v) {
         Complex bOver3a = ComplexMath.divide(b, ComplexMath.multiply(3, a));
-        Complex[] roots = new Complex[3];
-        roots[0] = ComplexMath.subtract(
-                ComplexMath.add(u, v),
-                bOver3a
-        );
+        Complex addUV = ComplexMath.add(u, v);
 
-        roots[1] = ComplexMath.subtract(
-                ComplexMath.add(
-                        ComplexMath.multiply(Complex.OMEGA, u),
-                        ComplexMath.multiply(Complex.OMEGA_SQR, v)
-                ),
-                bOver3a
-        );
+        // Precompute omega multiplications
+        Complex omegaU = ComplexMath.multiply(Complex.OMEGA, u);
+        Complex omegaSqrV = ComplexMath.multiply(Complex.OMEGA_SQR, v);
+        Complex omegaSqrU = ComplexMath.multiply(Complex.OMEGA_SQR, u);
+        Complex omegaV = ComplexMath.multiply(Complex.OMEGA, v);
 
-        roots[2] = ComplexMath.subtract(
-                ComplexMath.add(
-                        ComplexMath.multiply(Complex.OMEGA_SQR, u),
-                        ComplexMath.multiply(Complex.OMEGA, v)
-                ),
-                bOver3a
-        );
-
-        return roots;
+        return new Complex[]{
+                ComplexMath.subtract(addUV, bOver3a),
+                ComplexMath.subtract(ComplexMath.add(omegaU, omegaSqrV), bOver3a),
+                ComplexMath.subtract(ComplexMath.add(omegaSqrU, omegaV), bOver3a)
+        };
     }
 
     public static Complex[] getDepressedRoots(Complex a, Complex c, Complex d){
@@ -183,18 +183,18 @@ public class CubicEquation {
 
 
         Complex theta = ComplexTrigono.arcCos(ComplexMath.multiply(
-                            ComplexMath.divide(
-                                    ComplexMath.multiply(3.0, q),
-                                    ComplexMath.multiply(2.0, p)
-                            ),
-                            ComplexPower.sqrt(
-                                    ComplexMath.divideNumerator(-3.0, p)
-                            )
-                ));
+                ComplexMath.divide(
+                        ComplexMath.multiply(3.0, q),
+                        ComplexMath.multiply(2.0, p)
+                ),
+                ComplexPower.sqrt(
+                        ComplexMath.divideNumerator(-3.0, p)
+                )
+        ));
 
         Complex pTerm = ComplexMath.multiply(2.0, ComplexPower.sqrt(
-                                ComplexMath.divide(p, -3.0)
-                        ));
+                ComplexMath.divide(p, -3.0)
+        ));
 
         Complex[] roots = new Complex[3];
 
@@ -222,10 +222,7 @@ public class CubicEquation {
 
     public static Complex getDiscriminant(Complex a, Complex b, Complex c, Complex d){
         Complex[] Val = getDepressedCoffs(a, b, c, d);
-        return ComplexMath.add(
-                ComplexPower.power(ComplexMath.divide(Val[1], 2.0), 2), // q^2 / 4
-                ComplexPower.power(ComplexMath.divide(Val[0], 3.0), 3)  // p^3 / 27
-        );
+        return getDiscriminant(Val[0], Val[1]);
     }
 
     protected static Complex getDiscriminant(Complex p, Complex q){
@@ -240,45 +237,29 @@ public class CubicEquation {
     }
 
     public static CubicEquation solveCubic(Complex a, Complex b, Complex c, Complex d){
-        Complex[] depressed = getDepressedCoffs(a, b, c, d);
-        Complex discriminant = getDiscriminant(a, b, c, d);
-
-        Complex negHalfQ = ComplexMath.multiply(Complex.NEG_ONE, ComplexMath.divide(depressed[1], 2));
-
-        Complex u;
-        Complex v;
-        if (discriminant.isNull()) {
-            u = ComplexPower.cbrt(negHalfQ);
-            v = u; // Both roots are the same
-        } else {
-            Complex sqrtDiscriminant = ComplexPower.sqrt(discriminant);
-            u = ComplexPower.cbrt(ComplexMath.subtract(negHalfQ, sqrtDiscriminant));
-            v = ComplexPower.cbrt(ComplexMath.add(negHalfQ, sqrtDiscriminant));
+        if (a.isNull()) {
+            throw new ArithmeticException("Coefficient 'a' cannot be zero for a cubic equation.");
         }
 
-        Complex bOver3a = ComplexMath.divide(b, ComplexMath.multiply(3, a));
-        Complex root1 = ComplexMath.subtract(
-                ComplexMath.add(u, v),
-                bOver3a
-        );
+        Complex[] roots = new Complex[3];
+        if (b.isNull()){
+            if(c.isNull()){
+                roots[0] = ComplexPower.cbrt(ComplexMath.multiply(Complex.NEG_ONE, ComplexMath.divide(d, a)));
+                roots[1] = ComplexMath.multiply(Complex.OMEGA, roots[0]);
+                roots[2] = ComplexMath.multiply(Complex.OMEGA_SQR, roots[0]);
+            }
+            else{
+                roots = getDepressedRoots(a, c, d);
+            }
+        }
+        else{
+            Complex[] depressed = getDepressedCoffs(a, b, c, d);
+            Complex[] UV = getUV(depressed[0], depressed[1]);
 
-        Complex root2 = ComplexMath.subtract(
-                ComplexMath.add(
-                        ComplexMath.multiply(Complex.OMEGA, u),
-                        ComplexMath.multiply(Complex.OMEGA_SQR, v)
-                ),
-                bOver3a
-        );
+            roots = cardanoRoots(a, b, UV[0], UV[1]);
+        }
 
-        Complex root3 = ComplexMath.subtract(
-                ComplexMath.add(
-                        ComplexMath.multiply(Complex.OMEGA_SQR, u),
-                        ComplexMath.multiply(Complex.OMEGA, v)
-                ),
-                bOver3a
-        );
-
-        return new CubicEquation(root1, root2, root3);
+        return new CubicEquation(roots[0], roots[1], roots[2]);
     }
 
     public static CubicEquation solveCubic(CubicEquation Eq){
@@ -409,53 +390,5 @@ public class CubicEquation {
 
     public static void printEquation(Complex a, Complex b, Complex c, Complex d){
         printEquation(a, b, c, d, 3);
-    }
-
-    public static CubicEquation randomEquation(double minLimit, double maxLimit, boolean isInteger){
-        if(isInteger){
-            return new CubicEquation(Complex.getRandomComplex(minLimit, maxLimit, true),
-                    Complex.getRandomComplex(minLimit, maxLimit, true),
-                    Complex.getRandomComplex(minLimit, maxLimit, true)
-                    ,Complex.getRandomComplex(minLimit, maxLimit, true)
-            );
-        }else{
-            return new CubicEquation(Complex.getRandomComplex(minLimit, maxLimit, false),
-                    Complex.getRandomComplex(minLimit, maxLimit, false),
-                    Complex.getRandomComplex(minLimit, maxLimit, false)
-                    ,Complex.getRandomComplex(minLimit, maxLimit, false)
-            );
-        }
-    }
-
-    public static CubicEquation randomEquation(double minLimit, double maxLimit, boolean isInteger, boolean ispureReal){
-        if(isInteger){
-            if(ispureReal){
-                return new CubicEquation(Complex.getRandomComplex(minLimit, maxLimit, true, true),
-                        Complex.getRandomComplex(minLimit, maxLimit, true, true),
-                        Complex.getRandomComplex(minLimit, maxLimit, true, true)
-                        ,Complex.getRandomComplex(minLimit, maxLimit, true, true)
-                );
-            }else{
-                return new CubicEquation(Complex.getRandomComplex(minLimit, maxLimit, true, false),
-                        Complex.getRandomComplex(minLimit, maxLimit, true, false),
-                        Complex.getRandomComplex(minLimit, maxLimit, true, false)
-                        /*,Complex.getRandomComplex(minLimit, maxLimit, true, false)*/
-                );
-            }
-        }else{
-            if(ispureReal){
-                return new CubicEquation(Complex.getRandomComplex(minLimit, maxLimit, false, true),
-                        Complex.getRandomComplex(minLimit, maxLimit, false, true),
-                        Complex.getRandomComplex(minLimit, maxLimit, false, true)
-                        ,Complex.getRandomComplex(minLimit, maxLimit, false, true)
-                );
-            }else{
-                return new CubicEquation(Complex.getRandomComplex(minLimit, maxLimit, false, false),
-                        Complex.getRandomComplex(minLimit, maxLimit, false, false),
-                        Complex.getRandomComplex(minLimit, maxLimit, false, false)
-                        ,Complex.getRandomComplex(minLimit, maxLimit, false, false)
-                );
-            }
-        }
     }
 }

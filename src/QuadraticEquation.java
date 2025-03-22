@@ -212,39 +212,4 @@ public class QuadraticEquation {
         printEquation(new Complex(a, 0.0), new Complex(b, 0.0), new Complex(c, 0.0), 3);
     }
 
-    public static QuadraticEquation randomEquation(double minLimit, double maxLimit, boolean isInteger){
-        if(isInteger){
-                return new QuadraticEquation(Complex.getRandomComplex(minLimit, maxLimit, true),
-                        Complex.getRandomComplex(minLimit, maxLimit, true),
-                        Complex.getRandomComplex(minLimit, maxLimit, true));
-        }else{
-                return new QuadraticEquation(Complex.getRandomComplex(minLimit, maxLimit, false),
-                        Complex.getRandomComplex(minLimit, maxLimit, false),
-                        Complex.getRandomComplex(minLimit, maxLimit, false));
-        }
-    }
-
-    public static QuadraticEquation randomEquation(double minLimit, double maxLimit, boolean isInteger, boolean ispureReal){
-        if(isInteger){
-            if(ispureReal){
-                return new QuadraticEquation(Complex.getRandomComplex(minLimit, maxLimit, true, true),
-                        Complex.getRandomComplex(minLimit, maxLimit, true, true),
-                        Complex.getRandomComplex(minLimit, maxLimit, true, true));
-            }else{
-                return new QuadraticEquation(Complex.getRandomComplex(minLimit, maxLimit, true, false),
-                        Complex.getRandomComplex(minLimit, maxLimit, true, false),
-                        Complex.getRandomComplex(minLimit, maxLimit, true, false));
-            }
-        }else{
-            if(ispureReal){
-                return new QuadraticEquation(Complex.getRandomComplex(minLimit, maxLimit, false, true),
-                        Complex.getRandomComplex(minLimit, maxLimit, false, true),
-                        Complex.getRandomComplex(minLimit, maxLimit, false, true));
-            }else{
-                return new QuadraticEquation(Complex.getRandomComplex(minLimit, maxLimit, false, false),
-                        Complex.getRandomComplex(minLimit, maxLimit, false, false),
-                        Complex.getRandomComplex(minLimit, maxLimit, false, false));
-            }
-        }
-    }
 }

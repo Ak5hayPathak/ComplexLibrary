@@ -113,26 +113,6 @@ public final class ComplexMatrix extends Complex{
         return zeroMatrix;
     }
 
-    public static Complex[][] randomMatrix(int row, int column, double minLimit, double maxLimit, boolean isInteger) {
-        Complex[][] random = new Complex[row][column];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                random[i][j] = Complex.getRandomComplex(minLimit, maxLimit, isInteger);
-            }
-        }
-        return random;
-    }
-
-    public static Complex[][] randomMatrix(int row, int column, double minLimit, double maxLimit, boolean isInteger, boolean isPureReal) {
-        Complex[][] random = new Complex[row][column];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                random[i][j] = Complex.getRandomComplex(minLimit, maxLimit, isInteger, isPureReal);
-            }
-        }
-        return random;
-    }
-
     public static Complex[][] copyMatrix(Complex[][] matrix) {
         if (isMatrixNull(matrix)) {
             throw new IllegalArgumentException("Matrix is empty or null.");
