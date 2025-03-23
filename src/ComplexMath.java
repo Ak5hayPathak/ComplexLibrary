@@ -26,8 +26,18 @@ public final class ComplexMath {
         return new Complex(real + comp.reNum, comp.imNum);
     }
 
+    // c + (a+ib) → Adding a complex number to a real number
+    public static Complex add( double real, Complex comp){
+        return new Complex(real + comp.reNum, comp.imNum);
+    }
+
     // (a+ib) + ic → Adding an imaginary number to a complex number
     public static Complex add(Complex comp,double imaginary, boolean isImaginary){
+        return (isImaginary)? new Complex(comp.reNum, comp.imNum+imaginary) : add(comp, imaginary);
+    }
+
+    // ic + (a+ib) → Adding a complex number to an imaginary number
+    public static Complex add(double imaginary, boolean isImaginary, Complex comp){
         return (isImaginary)? new Complex(comp.reNum, comp.imNum+imaginary) : add(comp, imaginary);
     }
 
@@ -41,9 +51,19 @@ public final class ComplexMath {
         return new Complex(comp.reNum - real, comp.imNum);
     }
 
+    // a - (c+id) → Subtracting a complex number from a real number
+    public static Complex subtract(double real, Complex comp) {
+        return new Complex(real - comp.reNum, comp.imNum);
+    }
+
     // (c+id) - ib → Subtracting an imaginary number from a complex number
     public static Complex subtract(Complex comp, double imaginary, boolean isImaginary) {
         return isImaginary ? new Complex(comp.reNum, comp.imNum - imaginary) : subtract(comp, imaginary);
+    }
+
+    // ib - (c+id) → Subtracting a complex number from an imaginary number
+    public static Complex subtract(double imaginary, boolean isImaginary, Complex comp) {
+        return isImaginary ? new Complex(comp.reNum, imaginary - comp.imNum) : subtract(imaginary ,comp);
     }
 
     // (a+ib) * (c+id) → Standard Complex Multiplication
@@ -62,8 +82,20 @@ public final class ComplexMath {
         return new Complex(real * comp.reNum, real * comp.imNum);
     }
 
+    // Complex number * Real number → (c+id) * (a) = (ac) + (a*id)
+    public static Complex multiply(Complex comp, double real) {
+        return new Complex(real * comp.reNum, real * comp.imNum);
+    }
+
     // Imaginary number * Complex number → (ib) * (c+id) = b*(-d + ic)
-    public static Complex multiply(double imaginary, Complex comp, boolean isImaginary) {
+    public static Complex multiply(double imaginary,  boolean isImaginary, Complex comp) {
+        return isImaginary
+                ? new Complex(-imaginary * comp.imNum, imaginary * comp.reNum)
+                : multiply(imaginary, comp);
+    }
+
+    // Complex number * Imaginary number → (c+id) * (ib) = b*(-d + ic)
+    public static Complex multiply(Complex comp, double imaginary, boolean isImaginary) {
         return isImaginary
                 ? new Complex(-imaginary * comp.imNum, imaginary * comp.reNum)
                 : multiply(imaginary, comp);
@@ -97,15 +129,15 @@ public final class ComplexMath {
     }
 
     // a / (c+id) → Real number divided by a complex number
-    public static Complex divideNumerator(double numerator, Complex denominator) {
+    public static Complex divide(double numerator, Complex denominator) {
         return multiply(numerator, denominator.getReciprocal());
     }
 
     // ia / (c+id) → Imaginary number divided by a complex number
-    public static Complex divideNumerator(double numerator, Complex denominator, boolean isNumeratorImaginary) {
+    public static Complex divide(double numerator,  boolean isNumeratorImaginary, Complex denominator) {
         return isNumeratorImaginary
-                ? multiply(Complex.IOTA, divideNumerator(numerator, denominator))
-                : divideNumerator(numerator, denominator);
+                ? multiply(Complex.IOTA, divide(numerator, denominator))
+                : divide(numerator, denominator);
     }
 
     // Polar form: magnitude * e^(i * angle) = a + ib

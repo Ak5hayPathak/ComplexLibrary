@@ -209,5 +209,4 @@ public class QuadraticEquation {
     public static void printEquation(double a, double b, double c){
         printEquation(new Complex(a, 0.0), new Complex(b, 0.0), new Complex(c, 0.0), 3);
     }
-
 }

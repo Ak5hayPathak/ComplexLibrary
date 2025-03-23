@@ -188,7 +188,7 @@ public class CubicEquation {
                         ComplexMath.multiply(2.0, p)
                 ),
                 ComplexPower.sqrt(
-                        ComplexMath.divideNumerator(-3.0, p)
+                        ComplexMath.divide(-3.0, p)
                 )
         ));
 

@@ -2,6 +2,10 @@ import java.util.Random;
 
 public class ComplexRandom {
 
+    private ComplexRandom() {
+        throw new UnsupportedOperationException("Cannot instantiate ComplexRandom.");
+    }
+
     private static final Random rand = new Random();
 
     private static double getRandomDouble(double min, double max) {
@@ -166,5 +170,4 @@ public class ComplexRandom {
         }
         return random;
     }
-
 }
