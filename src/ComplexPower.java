@@ -1,4 +1,4 @@
-public class ComplexPower {
+public final class ComplexPower {
 
     private ComplexPower() {
         throw new UnsupportedOperationException("Cannot instantiate ComplexPower.");
@@ -27,9 +27,9 @@ public class ComplexPower {
 
     // (a+ib)^(c+id)
     public static Complex power(Complex base, Complex pow) {
-        if (base.isNull() && pow.isNull()) {
+        if (base.isZero() && pow.isZero()) {
             throw new ArithmeticException("0 raised to the power 0 is undefined.");
-        } else if (base.isNull()) {
+        } else if (base.isZero()) {
             return new Complex();
         }
         return expComplex(ComplexMath.multiply(pow, ComplexLog.ln(base)));
@@ -90,7 +90,7 @@ public class ComplexPower {
 
     // (a+ib)^(1/(c+id)) → Complex root of a complex number
     public static Complex nrt(Complex num, Complex root) {
-        if (root.isNull()) {
+        if (root.isZero()) {
             throw new ArithmeticException("Undefined root (division by zero)");
         }
         return power(num, root.getReciprocal());

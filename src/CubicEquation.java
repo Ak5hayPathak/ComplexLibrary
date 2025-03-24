@@ -27,7 +27,7 @@ public class CubicEquation {
     }
 
     CubicEquation(boolean aHasValue, Complex a, Complex root1, Complex root2, Complex root3){
-        if (a.isNull()) {
+        if (a.isZero()) {
             throw new ArithmeticException("Coefficient 'a' cannot be zero for a cubic equation.");
         }
         this.root1 = root1;
@@ -54,7 +54,7 @@ public class CubicEquation {
     }
 
     CubicEquation(Complex a, Complex b, Complex c, Complex d) {
-        if (a.isNull()) {
+        if (a.isZero()) {
             throw new ArithmeticException("Coefficient 'a' cannot be zero for a cubic equation.");
         }
         this.a = a;
@@ -63,8 +63,8 @@ public class CubicEquation {
         this.d = d;
 
         Complex[] roots = new Complex[3];
-        if (this.b.isNull()){
-            if(this.c.isNull()){
+        if (this.b.isZero()){
+            if(this.c.isZero()){
                 roots[0] = ComplexPower.cbrt(ComplexMath.multiply(Complex.NEG_ONE, ComplexMath.divide(d, a)));
                 roots[1] = ComplexMath.multiply(Complex.OMEGA, roots[0]);
                 roots[2] = ComplexMath.multiply(Complex.OMEGA_SQR, roots[0]);
@@ -110,7 +110,7 @@ public class CubicEquation {
     }
 
     protected static Complex[] getDepressedCoffs(Complex a, Complex b, Complex c, Complex d) {
-        if (a.isNull()) {
+        if (a.isZero()) {
             throw new ArithmeticException("Coefficient 'a' cannot be zero for a cubic equation.");
         }
 
@@ -237,13 +237,13 @@ public class CubicEquation {
     }
 
     public static CubicEquation solveCubic(Complex a, Complex b, Complex c, Complex d){
-        if (a.isNull()) {
+        if (a.isZero()) {
             throw new ArithmeticException("Coefficient 'a' cannot be zero for a cubic equation.");
         }
 
         Complex[] roots = new Complex[3];
-        if (b.isNull()){
-            if(c.isNull()){
+        if (b.isZero()){
+            if(c.isZero()){
                 roots[0] = ComplexPower.cbrt(ComplexMath.multiply(Complex.NEG_ONE, ComplexMath.divide(d, a)));
                 roots[1] = ComplexMath.multiply(Complex.OMEGA, roots[0]);
                 roots[2] = ComplexMath.multiply(Complex.OMEGA_SQR, roots[0]);
@@ -301,7 +301,7 @@ public class CubicEquation {
 
         System.out.print("x³");
 
-        if(!(Eq.b.isNull())){
+        if(!(Eq.b.isZero())){
             if(Eq.b.equals(Complex.ONE)){
                 System.out.print(" + x²");
             }
@@ -312,7 +312,7 @@ public class CubicEquation {
             }
         }
 
-        if(!(Eq.c.isNull())){
+        if(!(Eq.c.isZero())){
             if(Eq.c.equals(Complex.ONE)){
                 System.out.print(" + x");
             }
@@ -323,7 +323,7 @@ public class CubicEquation {
             }
         }
 
-        if(!(Eq.d.isNull())){
+        if(!(Eq.d.isZero())){
             printTerm(Eq.d, " = 0", precision);
         }
     }
@@ -343,7 +343,7 @@ public class CubicEquation {
     }
 
     public static void printEquation(Complex a, Complex b, Complex c, Complex d, int precision){
-        if (a.isNull()) {
+        if (a.isZero()) {
             throw new ArithmeticException("Coefficient 'a' cannot be zero for a cubic equation.");
         }
 
@@ -361,7 +361,7 @@ public class CubicEquation {
             System.out.print("x³");
         }
 
-        if(!(Eq.b.isNull())){
+        if(!(Eq.b.isZero())){
             if(Eq.b.equals(Complex.ONE)){
                 System.out.print(" + x²");
             }
@@ -372,7 +372,7 @@ public class CubicEquation {
             }
         }
 
-        if(!(Eq.c.isNull())){
+        if(!(Eq.c.isZero())){
             if(Eq.c.equals(Complex.ONE)){
                 System.out.print(" + x");
             }
@@ -383,7 +383,7 @@ public class CubicEquation {
             }
         }
 
-        if(!(Eq.d.isNull())){
+        if(!(Eq.d.isZero())){
             printTerm(Eq.d, " = 0", precision);
         }
     }

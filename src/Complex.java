@@ -22,11 +22,11 @@ public class Complex{
         this.imNum = other.imNum;
     }
 
-    public boolean isNull() {
+    public boolean isZero() {
         return Math.abs(this.reNum) < EPSILON && Math.abs(this.imNum) < EPSILON;
     }
-    public boolean isPureReal(){return (!this.isNull()) && (Math.abs(this.imNum) < EPSILON);}
-    public boolean isPureImaginary(){return (!this.isNull()) && (Math.abs(this.reNum) < EPSILON);}
+    public boolean isPureReal(){return (!this.isZero()) && (Math.abs(this.imNum) < EPSILON);}
+    public boolean isPureImaginary(){return (!this.isZero()) && (Math.abs(this.reNum) < EPSILON);}
     public boolean isGreaterThan(Complex other) {
         return this.getMod() > other.getMod();
     }
@@ -75,7 +75,7 @@ public class Complex{
         this.imNum = num.imNum;
     }
     public void printComplex(int precision) {
-        if (this.isNull()) {
+        if (this.isZero()) {
             System.out.print("0");
             return;
         }
@@ -100,12 +100,28 @@ public class Complex{
         }
     }
 
+    public double getReal(){
+        return this.reNum;
+    }
+
+    public double getRImag(){
+        return this.imNum;
+    }
+
+    public static Complex typecast(double val){
+        return new Complex(val, 0);
+    }
+
+    public static double typecast(Complex num){
+        return num.reNum;
+    }
+
     public void printComplex() {
         this.printComplex(3);
     }
 
     public void printPolar(int precision) {
-        if (this.isNull()) {
+        if (this.isZero()) {
             System.out.print("0");
             return;
         }
@@ -128,7 +144,7 @@ public class Complex{
     }
 
     protected String formatComplex(int precision) {
-        if (this.isNull()) return "0";
+        if (this.isZero()) return "0";
 
         // Construct format strings dynamically
         String realFormat = "%." + precision + "f";
@@ -157,7 +173,7 @@ public class Complex{
     }
 
     public double getAngle() {
-        if (isNull()) {
+        if (isZero()) {
             throw new ArithmeticException("Angle is undefined for the origin (0 + 0i)");
         }
 
@@ -165,7 +181,7 @@ public class Complex{
     }
 
     public double getStandardAngle() {
-        if (isNull()) {
+        if (isZero()) {
             throw new ArithmeticException("Angle is undefined for the origin (0 + 0i)");
         }
 
@@ -186,7 +202,7 @@ public class Complex{
     }
 
     public Complex getReciprocal(){
-        if(isNull()){
+        if(isZero()){
             throw new ArithmeticException("Reciprocal is undefined for zero complex number.");
         }
 

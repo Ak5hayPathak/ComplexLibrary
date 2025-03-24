@@ -1,4 +1,4 @@
-public class ComplexLog {
+public final class ComplexLog {
     private ComplexLog() {
         throw new UnsupportedOperationException("Cannot instantiate ComplexLog.");
     }
@@ -21,19 +21,27 @@ public class ComplexLog {
 
     // ln(a+ib) = ln(|z|) + i*arg(z)
     public static Complex ln(Complex num) {
-        if (num.isNull()) {
+        if (num.isZero()) {
             throw new ArithmeticException("Log of zero is undefined");
         }
         return new Complex(Math.log(num.getMod()), num.getAngle());
     }
 
+    public static Complex log10(Complex num){
+        return ComplexMath.divide(ln(num), Math.log(10));
+    }
+
+    public static Complex log10(double num, boolean isImaginary) {
+        return ComplexMath.divide(ln(num, isImaginary), Math.log(10));
+    }
+
     // log_(a+ib)_(c+id) = ln(c+id) / ln(a+ib)
     public static Complex log(Complex base, Complex value) {
-        if (base.isNull() || value.isNull()) {
-            throw new ArithmeticException("Log with zero base or value is undefined");
+        if (base.isZero() || value.isZero()) {
+            throw new ArithmeticException("Log with zero base or value is undefined.");
         }
         if (ComplexMath.areEqual(base, Complex.ONE)) {
-            return ComplexMath.divide(ln(value), new Complex(0.0, 2.0 * Math.PI));
+            throw new ArithmeticException("Logarithm base 1 is undefined.");
         }
         if (ComplexMath.areEqual(base, Complex.NEG_ONE)) {
             return ComplexMath.divide(ln(value), new Complex(0.0, Math.PI));
@@ -41,9 +49,10 @@ public class ComplexLog {
         return ComplexMath.divide(ln(value), ln(base));
     }
 
+
     // log_(a)_(c+id) = ln(c+id) / ln(a)
     public static Complex log(double base, Complex value) {
-        if (value.isNull()) {
+        if (value.isZero()) {
             throw new ArithmeticException("Log of zero is undefined");
         }
         return ComplexMath.divide(ln(value), ln(base));
@@ -51,7 +60,7 @@ public class ComplexLog {
 
     // log_(a+ib)_(c) = ln(c) / ln(a+ib)
     public static Complex log(Complex base, double value) {
-        if (base.isNull()) {
+        if (base.isZero()) {
             throw new ArithmeticException("Log with zero base is undefined");
         }
         return ComplexMath.divide(ln(value), ln(base));
@@ -81,4 +90,10 @@ public class ComplexLog {
     public static Complex log(double base, double value, boolean areBothImaginary) {
         return log(areBothImaginary ? ln(base, true) : new Complex(base, 0.0), areBothImaginary ? ln(value, true) : new Complex(value, 0.0));
     }
+
+    public static double logModulus(Complex num) {
+        return Math.log(num.getMod());
+    }
+
+    //Lambert W is to be added
 }

@@ -13,7 +13,7 @@ public class QuadraticEquation {
     }
 
     public QuadraticEquation(boolean aHasValue, Complex a, Complex root1, Complex root2) {
-        if (a.isNull()) {
+        if (a.isZero()) {
             throw new ArithmeticException("Coefficient 'a' cannot be zero for a quadratic equation.");
         }
 
@@ -31,7 +31,7 @@ public class QuadraticEquation {
 
     public QuadraticEquation(Complex a, Complex b, Complex c) {
 
-        if (a.isNull()) {
+        if (a.isZero()) {
             throw new ArithmeticException("Coefficient 'a' cannot be zero for a quadratic equation.");
         }
 
@@ -80,7 +80,7 @@ public class QuadraticEquation {
     //Solving Quadratic Roots for Complex numbers (a+ib)x² + (c+id)x + (e+if) = 0
     public static QuadraticEquation solveEquation(Complex a, Complex b, Complex c) {
 
-        if(a.isNull()){
+        if(a.isZero()){
             throw new ArithmeticException("Coefficient 'a' cannot be 0.");
         }
         Complex discriminant = getDiscriminant(a, b, c);
@@ -134,7 +134,7 @@ public class QuadraticEquation {
 
         System.out.print("x²");
 
-        if(!(Eq.b.isNull())){
+        if(!(Eq.b.isZero())){
             if(Eq.b.equals(Complex.ONE)){
                 System.out.print(" + x");
             }
@@ -145,7 +145,7 @@ public class QuadraticEquation {
             }
         }
 
-        if(!(Eq.c.isNull())){
+        if(!(Eq.c.isZero())){
             printTerm(Eq.c, " = 0", precision);
         }
     }
@@ -163,7 +163,7 @@ public class QuadraticEquation {
     }
 
     public static void printEquation(Complex a, Complex b, Complex c, int precision) {
-        if (a.isNull()) {
+        if (a.isZero()) {
             throw new ArithmeticException("Coefficient 'a' cannot be zero for a quadratic equation.");
         }
 
@@ -181,7 +181,7 @@ public class QuadraticEquation {
             System.out.print("x²");
         }
 
-        if(!(Eq.b.isNull())){
+        if(!(Eq.b.isZero())){
             if(Eq.b.equals(Complex.ONE)){
                 System.out.print(" + x");
             }
@@ -192,7 +192,7 @@ public class QuadraticEquation {
             }
         }
 
-        if(!(Eq.c.isNull())){
+        if(!(Eq.c.isZero())){
             printTerm(Eq.c, " = 0", precision);
         }
 

@@ -103,7 +103,7 @@ public final class ComplexMath {
 
     // (a+ib) / (c+id) → Standard Complex Division
     public static Complex divide(Complex numerator, Complex denominator) {
-        if (isCompNull(denominator)) {
+        if (denominator.isZero()) {
             throw new ArithmeticException("Division by zero is undefined");
         }
         Complex conjugate = denominator.getConjugate();

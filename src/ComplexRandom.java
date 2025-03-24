@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class ComplexRandom {
+public final class ComplexRandom {
 
     private ComplexRandom() {
         throw new UnsupportedOperationException("Cannot instantiate ComplexRandom.");

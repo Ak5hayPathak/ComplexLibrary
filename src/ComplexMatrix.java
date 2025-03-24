@@ -356,7 +356,7 @@ public final class ComplexMatrix extends Complex{
 
         // LU Decomposition using Gaussian elimination
         for (int k = 0; k < n; k++) {
-            if (U[k][k].isNull()) {
+            if (U[k][k].isZero()) {
                 throw new ArithmeticException("Matrix is singular (det = 0).");
             }
 
