@@ -101,7 +101,7 @@ public final class ComplexMath {
                 : multiply(imaginary, comp);
     }
 
-    // (a+ib) / (c+id) → Standard Complex Division
+    // (a+ib)/(c+id) → Standard Complex Division
     public static Complex divide(Complex numerator, Complex denominator) {
         if (denominator.isZero()) {
             throw new ArithmeticException("Division by zero is undefined");

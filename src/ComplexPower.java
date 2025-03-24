@@ -9,7 +9,7 @@ public final class ComplexPower {
         return new Complex(Math.cos(pow), Math.sin(pow));
     }
 
-    // e^i(ix) = e^(-x) → Exponential decay when given a purely imaginary exponent
+    //e^i(ix) = e^(-x) → Exponential decay when given a purely imaginary exponent
     public static Complex eulersFormula(double pow, boolean isPowerImaginary) {
         return isPowerImaginary ? new Complex(Math.exp(-pow), 0.0) : eulersFormula(pow);
     }

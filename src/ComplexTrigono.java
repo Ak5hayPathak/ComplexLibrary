@@ -290,5 +290,4 @@ public final class ComplexTrigono {
     public static Complex arcCotDegrees(double value, boolean isValueImaginary){
         return toDegrees(arcCot(value, isValueImaginary));
     }
-
 }

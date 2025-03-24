@@ -92,4 +92,5 @@ public class IO {
         System.out.print(prompt);
         return input.nextLine().trim();
     }
+
 }

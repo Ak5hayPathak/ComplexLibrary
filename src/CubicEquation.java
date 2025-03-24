@@ -391,4 +391,5 @@ public class CubicEquation {
     public static void printEquation(Complex a, Complex b, Complex c, Complex d){
         printEquation(a, b, c, d, 3);
     }
+
 }

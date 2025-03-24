@@ -95,5 +95,6 @@ public final class ComplexLog {
         return Math.log(num.getMod());
     }
 
+
     //Lambert W is to be added
 }

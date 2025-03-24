@@ -225,7 +225,6 @@ public class Complex{
         return Objects.hash(reNum, imNum);
     }
 
-
     // Constants
     static final double EPSILON = 1e-10;
 

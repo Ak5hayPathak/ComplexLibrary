@@ -222,7 +222,6 @@ public final class ComplexMatrix extends Complex{
         return product;
     }
 
-
     public static Complex[][] powerMatrix(Complex[][] matrix, int power) {
         if (isMatrixNull(matrix)) {
             throw new IllegalArgumentException("Matrix is empty or null.");
