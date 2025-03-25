@@ -104,7 +104,7 @@ public class Complex{
         return this.reNum;
     }
 
-    public double getRImag(){
+    public double getImag(){
         return this.imNum;
     }
 
