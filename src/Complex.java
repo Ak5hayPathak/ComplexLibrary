@@ -22,6 +22,55 @@ public class Complex{
         this.imNum = other.imNum;
     }
 
+    public Complex(String value) {
+        value = value.replaceAll("\\s", ""); // Remove spaces
+
+        // Handle pure real numbers (e.g., "3", "-2.5")
+        if (value.matches("[-+]?[0-9]*\\.?[0-9]+")) {
+            this.reNum = Double.parseDouble(value);
+            this.imNum = 0.0;
+            return;
+        }
+
+        // Handle pure imaginary numbers (e.g., "4i", "-2.3i", "i", "-i")
+        if (value.matches("[-+]?[0-9]*\\.?[0-9]*i")) {
+            if (value.equals("i")) {
+                this.reNum = 0.0;
+                this.imNum = 1.0;
+            } else if (value.equals("-i")) {
+                this.reNum = 0.0;
+                this.imNum = -1.0;
+            } else {
+                this.reNum = 0.0;
+                this.imNum = Double.parseDouble(value.replace("i", ""));
+            }
+            return;
+        }
+
+        // Handle full complex numbers (e.g., "3+4i", "-2-5i", "3.1+i", "4-i")
+        String regex = "([-+]?[0-9]*\\.?[0-9]+)?([-+][0-9]*\\.?[0-9]*)?i";
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+        java.util.regex.Matcher matcher = pattern.matcher(value);
+
+        if (matcher.matches()) {
+            // Extract real part (if exists, otherwise default to 0)
+            String realPart = matcher.group(1);
+            this.reNum = (realPart != null && !realPart.isEmpty()) ? Double.parseDouble(realPart) : 0.0;
+
+            // Extract imaginary part (handle "+i" or "-i" as special cases)
+            String imagPart = matcher.group(2);
+            if (imagPart == null || imagPart.isEmpty()) {
+                this.imNum = 0.0; // No imaginary part means it's a real number
+            } else if (imagPart.equals("+") || imagPart.equals("-")) {
+                this.imNum = imagPart.equals("+") ? 1.0 : -1.0;
+            } else {
+                this.imNum = Double.parseDouble(imagPart);
+            }
+        } else {
+            throw new IllegalArgumentException("Invalid complex number format: " + value);
+        }
+    }
+
     public boolean isZero() {
         return Math.abs(this.reNum) < EPSILON && Math.abs(this.imNum) < EPSILON;
     }
@@ -44,27 +93,35 @@ public class Complex{
     }
 
     public static Complex inputComplex(String prompt) {
-
         while (true) {
-            String input = IO.getString(prompt);
+            String input = IO.getString(prompt).replaceAll("\\s", ""); // Remove spaces
 
-            String[] parts = input.split(",");
-
-            try {
-                if (parts.length == 1) {
-                    // Single number (real part only)
-                    double real = Double.parseDouble(parts[0].trim());
-                    return new Complex(real, 0);
-                } else if (parts.length == 2) {
-                    // Two numbers (real and imaginary parts)
-                    double real = Double.parseDouble(parts[0].trim());
-                    double imaginary = Double.parseDouble(parts[1].trim());
-                    return new Complex(real, imaginary);
-                } else {
-                    System.out.println("Invalid format! Please enter one or two values separated by a comma.");
+            // Handle comma-separated real and imaginary numbers (e.g., "3,4")
+            if (input.contains(",")) {
+                String[] parts = input.split(",");
+                try {
+                    if (parts.length == 2) {
+                        double real = Double.parseDouble(parts[0].trim());
+                        double imaginary = Double.parseDouble(parts[1].trim());
+                        return new Complex(real, imaginary);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid format! Please enter the complex number in one of the following ways:");
+                    System.out.println(" - As two values separated by a comma: (a, b) -> a + bi");
+                    System.out.println(" - In standard complex format: a + bi or a - bi");
+                    continue;
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Please enter valid numeric values.");
+                System.out.println("Invalid format! Please enter the complex number in one of the following ways:");
+                System.out.println(" - As two values separated by a comma: (a, b) -> a + bi");
+                System.out.println(" - In standard complex format: a + bi or a - bi");
+                continue;
+            }
+
+            // Handle direct complex number formats (e.g., "3+4i", "i", "-i", "4.5", "-3.2i")
+            try {
+                return new Complex(input);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid complex number format! Try again.");
             }
         }
     }
@@ -74,6 +131,7 @@ public class Complex{
         this.reNum = num.reNum;
         this.imNum = num.imNum;
     }
+
     public void printComplex(int precision) {
         if (this.isZero()) {
             System.out.print("0");
