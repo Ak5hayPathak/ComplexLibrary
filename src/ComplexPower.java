@@ -60,9 +60,31 @@ public final class ComplexPower {
         return power(num, 0.5);
     }
 
+    // sqrt(ib)
+    public static Complex sqrtImaginary(double val) {
+        return sqrt(new Complex(0, val));
+    }
+
+    public static Complex[] sqrtAll(Complex num) {
+        double r = Math.sqrt(num.getMod()); // Correct square root computation
+        double theta = num.getAngle(); // Compute argument (angle)
+
+        Complex[] roots = new Complex[2];
+        for (int k = 0; k < 2; k++) {
+            double angle = (theta + k * Math.PI) / 2.0; // Roots are separated by π/2
+            roots[k] = new Complex(r * Math.cos(angle), r * Math.sin(angle));
+        }
+        return roots;
+    }
+
     // cbrt(a+ib) using complex power
     public static Complex cbrt(Complex num) {
         return power(num, 1.0 / 3.0);
+    }
+
+    // cbrt(ib)
+    public static Complex cbrtImaginary(double val) {
+        return cbrt(new Complex(0, val));
     }
 
     public static Complex[] cbrtAll(Complex num) {
@@ -75,17 +97,6 @@ public final class ComplexPower {
             roots[k] = new Complex(r * Math.cos(angle), r * Math.sin(angle));
         }
         return roots;
-    }
-
-
-    // sqrt(ib)
-    public static Complex sqrtImaginary(double val) {
-        return sqrt(new Complex(0, val));
-    }
-
-    // cbrt(ib)
-    public static Complex cbrtImaginary(double val) {
-        return cbrt(new Complex(0, val));
     }
 
     // (a+ib)^(1/(c+id)) → Complex root of a complex number
@@ -120,4 +131,17 @@ public final class ComplexPower {
         Complex imaginaryReciprocal = new Complex(0, -1 / root);  // Reciprocal of (id) is (-i/d)
         return power(new Complex(0, num), imaginaryReciprocal);
     }
+
+    public static Complex[] nrtAll(Complex num, int root) {
+        double r = Math.pow(num.getMod(), 1.0 / root); // Compute nth root of modulus
+        double theta = num.getAngle(); // Compute argument (angle)
+
+        Complex[] roots = new Complex[root];
+        for (int k = 0; k < root; k++) {
+            double angle = (theta + 2 * Math.PI * k) / root; // Correct nth root formula
+            roots[k] = new Complex(r * Math.cos(angle), r * Math.sin(angle));
+        }
+        return roots;
+    }
+
 }
