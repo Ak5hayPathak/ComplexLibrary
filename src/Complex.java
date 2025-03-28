@@ -75,7 +75,9 @@ public class Complex{
         return Math.abs(this.reNum) < EPSILON && Math.abs(this.imNum) < EPSILON;
     }
     public boolean isPureReal(){return (!this.isZero()) && (Math.abs(this.imNum) < EPSILON);}
+
     public boolean isPureImaginary(){return (!this.isZero()) && (Math.abs(this.reNum) < EPSILON);}
+
     public boolean isGreaterThan(Complex other) {
         return this.getMod() > other.getMod();
     }
@@ -146,10 +148,10 @@ public class Complex{
             System.out.printf(format, reNum);
         } else if (this.isPureImaginary()) {
             // Pure imaginary number
-            if (Math.abs(imNum) == 1) {
-                System.out.print(imNum > EPSILON ? "i" : "-i");
+            if (Math.abs(this.imNum) == 1) {
+                System.out.print(this.imNum > EPSILON ? "i" : "-i");
             } else {
-                System.out.printf(imNum > EPSILON ? "i%s" : "-i%s", String.format(format, Math.abs(imNum)));
+                System.out.printf("%si", String.format(format, this.imNum));
             }
         } else {
             // General complex number
@@ -231,19 +233,19 @@ public class Complex{
     }
 
     public double getAngle() {
-        if (isZero()) {
+        if (this.isZero()) {
             throw new ArithmeticException("Angle is undefined for the origin (0 + 0i)");
         }
 
-        return Math.atan2(imNum, reNum); // Automatically handles all quadrants
+        return Math.atan2(this.imNum, this.reNum); // Automatically handles all quadrants
     }
 
     public double getStandardAngle() {
-        if (isZero()) {
+        if (this.isZero()) {
             throw new ArithmeticException("Angle is undefined for the origin (0 + 0i)");
         }
 
-        double angle = Math.atan2(imNum, reNum); // Principal argument (-π, π]
+        double angle = Math.atan2(this.imNum, this.reNum); // Principal argument (-π, π]
         return (angle < 0) ? angle + 2 * Math.PI : angle; // Convert negative angles to [0, 2π)
     }
 
@@ -260,12 +262,12 @@ public class Complex{
     }
 
     public Complex getReciprocal(){
-        if(isZero()){
+        if(this.isZero()){
             throw new ArithmeticException("Reciprocal is undefined for zero complex number.");
         }
 
         double modSqr = this.reNum*this.reNum + this.imNum*this.imNum;
-        return new Complex(reNum / modSqr, -imNum / modSqr);
+        return new Complex(this.reNum / modSqr, -this.imNum / modSqr);
     }
 
     @Override
