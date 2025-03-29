@@ -22,7 +22,7 @@ public final class ComplexPower {
 
     // Directly calls expComplex() for efficiency
     public static Complex eulersFormula(Complex pow) {
-        return expComplex(pow);
+        return expComplex(new Complex(-pow.imNum, pow.reNum));
     }
 
     // (a+ib)^(c+id)
@@ -109,27 +109,35 @@ public final class ComplexPower {
 
     // (a+ib)^(1/n) → nth root of a complex number
     public static Complex nrt(Complex num, double root) {
-        if (Math.abs(root) < Complex.EPSILON) {
-            throw new ArithmeticException("Undefined root (division by zero)");
-        }
-        return power(num, 1.0 / root);
+        return nrt(num, new Complex(root, 0));
+    }
+
+    // (a+ib)^(1/in) → imaginary nth root of a complex number
+    public static Complex nrt(Complex num, double root, boolean isRootImaginary) {
+        return isRootImaginary? nrt(num, new Complex(0, root)):nrt(num, new Complex(root, 0));
     }
 
     // (ib)^(1/n) → nth root of an imaginary number
-    public static Complex nrt(double num, double root) {
-        if (Math.abs(root) < Complex.EPSILON) {
-            throw new ArithmeticException("Undefined root (division by zero)");
-        }
-        return power(new Complex(0, num), 1.0 / root);
+    public static Complex nrt(double num, boolean isBaseImaginary, double root) {
+        return isBaseImaginary? nrt(new Complex(0, num), new Complex(root, 0))
+                : nrt(new Complex(num, 0), new Complex(root, 0));
     }
 
     // (ib)^(1/(id)) → Root of an imaginary number with an imaginary root
-    public static Complex nthRootImaginaryExponent(double num, double root) {
-        if (Math.abs(root) < Complex.EPSILON) {
-            throw new ArithmeticException("Undefined root (division by zero)");
-        }
-        Complex imaginaryReciprocal = new Complex(0, -1 / root);  // Reciprocal of (id) is (-i/d)
-        return power(new Complex(0, num), imaginaryReciprocal);
+    public static Complex nrt(boolean areBothImaginary, double num, double root) {
+        return areBothImaginary? nrt(new Complex(0, num), new Complex(0, root))
+                :nrt(new Complex(num, 0), new Complex(root, 0));
+    }
+
+    // (a)^1/(c+id) → Complex root of a real number
+    public static Complex nrt(double num, Complex root){
+        return nrt(new Complex(num, 0), root);
+    }
+
+    // (a)^1/(id) → imaginary root of a real number
+    public static Complex nrt(double num, double root, boolean isRootImaginary){
+        return isRootImaginary? nrt(new Complex(num, 0), new Complex(0, root))
+                :nrt(new Complex(num, 0), new Complex(root, 0));
     }
 
     public static Complex[] nrtAll(Complex num, int root) {
