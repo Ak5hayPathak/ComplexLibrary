@@ -1,18 +1,21 @@
+package Complex;
+
 import java.util.Objects;
+import IO.*;
 
 public class Complex{
     protected double reNum, imNum;
 
-    Complex(){
+    public Complex(){
         this(0.0, 0.0);
     }
 
-    Complex(double reNum, double imNum){
+    public Complex(double reNum, double imNum){
         this.reNum = reNum;
         this.imNum = imNum;
     }
 
-    Complex(double magnitude, double angle, boolean isPolar){
+    public Complex(double magnitude, double angle, boolean isPolar){
         this( (isPolar) ? magnitude * Math.cos(angle): magnitude,
                 (isPolar) ? magnitude * Math.sin(angle): angle);
     }
@@ -203,27 +206,27 @@ public class Complex{
         this.printPolar(3);
     }
 
-    protected String formatComplex(int precision) {
-        if (this.isZero()) return "0";
+    protected static String formatComplex(Complex num, int precision) {
+        if (num.isZero()) return "0";
 
         // Construct format strings dynamically
         String realFormat = "%." + precision + "f";
         String imagFormat = "%." + precision + "fi";
 
-        boolean isPureReal = (this.imNum == 0);
-        boolean isPureImaginary = (this.reNum == 0);
-        boolean isUnitImaginary = (Math.abs(this.imNum) == 1);
+        boolean isPureReal = (num.imNum == 0);
+        boolean isPureImaginary = (num.reNum == 0);
+        boolean isUnitImaginary = (Math.abs(num.imNum) == 1);
 
         if (isPureReal) {
-            return String.format(realFormat, this.reNum);
+            return String.format(realFormat, num.reNum);
         } else if (isPureImaginary) {
-            return isUnitImaginary ? (this.imNum > 0 ? "i" : "-i") :
-                    String.format(imagFormat, this.imNum);
+            return isUnitImaginary ? (num.imNum > 0 ? "i" : "-i") :
+                    String.format(imagFormat, num.imNum);
         } else {
             return String.format("%s %s %s",
-                    String.format(realFormat, this.reNum),
-                    (this.imNum > 0 ? "+" : "-"),
-                    isUnitImaginary ? "i" : String.format(imagFormat, Math.abs(this.imNum))
+                    String.format(realFormat, num.reNum),
+                    (num.imNum > 0 ? "+" : "-"),
+                    isUnitImaginary ? "i" : String.format(imagFormat, Math.abs(num.imNum))
             );
         }
     }
@@ -286,17 +289,17 @@ public class Complex{
     }
 
     // Constants
-    static final double EPSILON = 1e-10;
+    public static final double EPSILON = 1e-10;
 
-    static final Complex IOTA = new Complex(0, 1);
-    static final Complex NEG_IOTA = new Complex(0, -1);
-    static final Complex ZERO = new Complex(0.0, 0.0);
-    static final Complex ONE = new Complex(1.0, 0.0);
-    static final Complex NEG_ONE = new Complex(-1.0, 0.0);
-    static final Complex OMEGA = new Complex(-0.5, Math.sqrt(3) / 2.0);
-    static final Complex OMEGA_SQR = new Complex(-0.5, -Math.sqrt(3) / 2.0);
+    public static final Complex IOTA = new Complex(0, 1);
+    public static final Complex NEG_IOTA = new Complex(0, -1);
+    public static final Complex ZERO = new Complex(0.0, 0.0);
+    public static final Complex ONE = new Complex(1.0, 0.0);
+    public static final Complex NEG_ONE = new Complex(-1.0, 0.0);
+    public static final Complex OMEGA = new Complex(-0.5, Math.sqrt(3) / 2.0);
+    public static final Complex OMEGA_SQR = new Complex(-0.5, -Math.sqrt(3) / 2.0);
 
-    static final Complex LOG_OF_NEG_UNITY = new Complex(0, Math.PI);
-    static final Complex LOG_OF_IOTA = new Complex(0, Math.PI / 2.0);
-    static final Complex LOG_OF_OMEGA = new Complex(0, 2 * Math.PI / 3.0);
+    public static final Complex LOG_OF_NEG_UNITY = new Complex(0, Math.PI);
+    public static final Complex LOG_OF_IOTA = new Complex(0, Math.PI / 2.0);
+    public static final Complex LOG_OF_OMEGA = new Complex(0, 2 * Math.PI / 3.0);
 }

@@ -1,3 +1,5 @@
+package IO;
+
 import java.util.Scanner;
 
 public class IO {

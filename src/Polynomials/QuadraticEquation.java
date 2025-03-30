@@ -1,3 +1,7 @@
+package Polynomials;
+
+import Complex.*;
+
 public class QuadraticEquation {
     private final Complex a, b, c;
     private final Complex root1, root2;
@@ -120,7 +124,7 @@ public class QuadraticEquation {
     }
 
     private static void printTerm(Complex num, String term, int precision){
-        boolean isNegative = num.reNum < 0.0 || (num.reNum == 0.0 && num.imNum < 0.0);
+        boolean isNegative = num.getReal() < 0.0 || (num.getReal() == 0.0 && num.getImag() < 0.0);
         Complex absSum = isNegative ? ComplexMath.multiply(num, Complex.NEG_ONE) : num;
 
         System.out.print(isNegative ? " - " : " + ");

@@ -1,3 +1,5 @@
+package Complex;
+
 public final class ComplexPower {
 
     private ComplexPower() {

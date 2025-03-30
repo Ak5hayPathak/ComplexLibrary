@@ -1,8 +1,12 @@
+package Polynomials;
+
+import Complex.*;
+
 public class CubicEquation {
     private final Complex a, b, c, d;
     private final Complex root1, root2, root3;
 
-    CubicEquation(Complex root1, Complex root2, Complex root3){
+    public CubicEquation(Complex root1, Complex root2, Complex root3){
         this.root1 = root1;
         this.root2 = root2;
         this.root3 = root3;
@@ -26,7 +30,7 @@ public class CubicEquation {
         this(new Complex(root1, 0), new Complex(root2, 0), new Complex(root3, 0));
     }
 
-    CubicEquation(boolean aHasValue, Complex a, Complex root1, Complex root2, Complex root3){
+    public CubicEquation(boolean aHasValue, Complex a, Complex root1, Complex root2, Complex root3){
         if (a.isZero()) {
             throw new ArithmeticException("Coefficient 'a' cannot be zero for a cubic equation.");
         }
@@ -49,11 +53,11 @@ public class CubicEquation {
         ));
     }
 
-    CubicEquation(boolean aHasValue, double a, double root1, double root2, double root3){
+    public CubicEquation(boolean aHasValue, double a, double root1, double root2, double root3){
         this(aHasValue, new Complex(a, 0), new Complex(root1, 0), new Complex(root2, 0), new Complex(root3, 0));
     }
 
-    CubicEquation(Complex a, Complex b, Complex c, Complex d) {
+    public CubicEquation(Complex a, Complex b, Complex c, Complex d) {
         if (a.isZero()) {
             throw new ArithmeticException("Coefficient 'a' cannot be zero for a cubic equation.");
         }
@@ -85,7 +89,7 @@ public class CubicEquation {
         this.root3 = roots[2];
     }
 
-    CubicEquation(double a, double b, double c, double d){
+    public CubicEquation(double a, double b, double c, double d){
         this(new Complex(a, 0), new Complex(b, 0), new Complex(c, 0), new Complex(d, 0));
     }
 
@@ -271,7 +275,7 @@ public class CubicEquation {
     }
 
     private static void printTerm(Complex num, String term, int precision){
-        boolean isNegative = num.reNum < 0.0 || (num.reNum == 0.0 && num.imNum < 0.0);
+        boolean isNegative = num.getReal() < 0.0 || (num.getReal() == 0.0 && num.getImag() < 0.0);
         Complex absSum = isNegative ? ComplexMath.multiply(num, Complex.NEG_ONE) : num;
 
         System.out.print(isNegative ? " - " : " + ");

@@ -1,8 +1,13 @@
+package Matrix;
+
 import java.util.concurrent.atomic.AtomicInteger;
+import IO.*;
+import Complex.*;
 
 public final class ComplexMatrix extends Complex{
 
     private ComplexMatrix() {
+        super();
         throw new UnsupportedOperationException("Cannot instantiate ComplexMatrix.");
     }
 
@@ -40,7 +45,7 @@ public final class ComplexMatrix extends Complex{
             int localMaxWidth = 0;
             for (Complex[] row : matrix) {
                 for (Complex num : row) {
-                    String formatted = num.formatComplex(precision);
+                    String formatted = formatComplex(num, precision);
                     localMaxWidth = Math.max(localMaxWidth, formatted.length());
                 }
             }
@@ -63,7 +68,7 @@ public final class ComplexMatrix extends Complex{
 
             for (Complex[] row : matrix) {
                 for (Complex num : row) {
-                    System.out.printf("%-" + columnWidth + "s", num.formatComplex(precision));
+                    System.out.printf("%-" + columnWidth + "s", formatComplex(num, precision));
                 }
                 System.out.println();
             }
