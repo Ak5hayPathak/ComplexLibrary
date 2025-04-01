@@ -338,8 +338,7 @@ public class CMatrix extends Complex{
 
     public CMatrix getInverseMatrix() {
         if (this.isMatrixNull()) {
-            System.out.println("Matrix is empty or null.");
-            return null;
+            throw new IllegalArgumentException("Matrix is empty or null.");
         }
 
         int n = this.matrix.length;
@@ -347,17 +346,63 @@ public class CMatrix extends Complex{
             throw new IllegalArgumentException("Inverse is only defined for square matrices.");
         }
 
-        Complex determinant = this.getDeterminant();
-
-        if (determinant.equals(Complex.ZERO)) {
-            throw new IllegalArgumentException("Inverse does not exist because the determinant is zero!");
+        // Create an augmented matrix [A | I]
+        Complex[][] augmented = new Complex[n][2 * n];
+        for (int i = 0; i < n; i++) {
+            // Copy A
+            System.arraycopy(this.matrix[i], 0, augmented[i], 0, n);
+            for (int j = n; j < 2 * n; j++) {
+                augmented[i][j] = (i == j - n) ? Complex.ONE : Complex.ZERO; // Identity matrix
+            }
         }
 
-        CMatrix adjoint = this.getAdjoint();
-        Complex reciprocal = determinant.getReciprocal();
+        // Perform Gaussian elimination to convert [A | I] into [I | A^-1]
+        for (int i = 0; i < n; i++) {
+            // Find the pivot row
+            int pivotRow = i;
+            for (int k = i + 1; k < n; k++) {
+                if (augmented[k][i].getMod() > augmented[pivotRow][i].getMod()) {
+                    pivotRow = k;
+                }
+            }
 
-        // Multiply adjugate by 1/determinant
-        return adjoint.constProduct(reciprocal);
+            // Swap rows if necessary
+            if (i != pivotRow) {
+                Complex[] temp = augmented[i];
+                augmented[i] = augmented[pivotRow];
+                augmented[pivotRow] = temp;
+            }
+
+            // Check if the matrix is singular
+            if (augmented[i][i].equals(Complex.ZERO)) {
+                throw new IllegalArgumentException("Matrix is singular and cannot be inverted.");
+            }
+
+            // Normalize the pivot row
+            Complex pivotValue = augmented[i][i];
+            for (int j = 0; j < 2 * n; j++) {
+                augmented[i][j] = ComplexMath.divide(augmented[i][j], pivotValue);
+            }
+
+            // Eliminate the other rows
+            for (int k = 0; k < n; k++) {
+                if (k != i) {
+                    Complex factor = augmented[k][i];
+                    for (int j = 0; j < 2 * n; j++) {
+                        augmented[k][j] = ComplexMath.subtract(augmented[k][j], ComplexMath.multiply(factor, augmented[i][j]));
+                    }
+                }
+            }
+        }
+
+        // Extract the inverse matrix from [I | A^-1]
+        Complex[][] inverseMatrix = new Complex[n][n];
+        for (int i = 0; i < n; i++) {
+            System.arraycopy(augmented[i], n, inverseMatrix[i], 0, n);
+        }
+
+        return new CMatrix(inverseMatrix);
     }
+
 
 }
