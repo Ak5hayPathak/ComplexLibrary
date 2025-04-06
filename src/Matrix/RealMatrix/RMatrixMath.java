@@ -1,8 +1,8 @@
 package Matrix.RealMatrix;
 
-public final class MatrixMath {
+public final class RMatrixMath {
 
-    private MatrixMath() {
+    private RMatrixMath() {
         throw new UnsupportedOperationException("Cannot instantiate MatrixMath.");
     }
 

@@ -2,9 +2,9 @@ package Matrix.ComplexMatrix;
 
 import Complex.*;
 
-public final class MatrixMath {
+public final class CMatrixMath {
 
-    private MatrixMath() {
+    private CMatrixMath() {
         super();
         throw new UnsupportedOperationException("Cannot instantiate MatrixMath.");
     }
