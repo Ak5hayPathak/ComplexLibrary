@@ -1,37 +1,36 @@
-package Matrix;
-import Complex.*;
+package Matrix.RealMatrix;
+
+import java.util.Objects;
+import java.util.Random;
 import IO.IO;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-public class CMatrix extends Complex{
+public class RMatrix {
 
     private final int rows, cols;
-    private Complex[][] matrix;
+    private double[][] matrix;
 
-    public CMatrix(Complex[][] matrix){
+    public RMatrix(double[][] matrix){
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
             throw new IllegalArgumentException("Matrix is empty or null.");
         }
 
         this.rows = matrix.length;
         this.cols = matrix[0].length;
-        this.matrix = new Complex[this.rows][this.cols];
+        this.matrix = new double[this.rows][this.cols];
 
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                this.matrix[i][j] = new Complex(matrix[i][j]); // Deep Copy
-            }
+            // Deep Copy
+            System.arraycopy(matrix[i], 0, this.matrix[i], 0, cols);
         }
     }
 
-    public CMatrix(int rows, int cols){
+    public RMatrix(int rows, int cols){
         this.rows = rows;
         this.cols = cols;
-        if(isRowColLessThanUnit()){
+        if (isRowColLessThanUnit()) {
             throw new ArithmeticException("Error: Rows/Columns must be greater than or equal to 1");
         }
-        this.matrix = new Complex[this.rows][this.cols];
+        this.matrix = new double[this.rows][this.cols];
     }
 
     private boolean isRowColLessThanUnit(){
@@ -43,7 +42,7 @@ public class CMatrix extends Complex{
     }
 
     private boolean rowColExceeded(int row, int col){
-        return row > this.rows || col > this.cols;
+        return row >= this.rows || col >= this.cols;
     }
 
     public static int setRow(){
@@ -66,54 +65,45 @@ public class CMatrix extends Complex{
         return this.matrix == null || this.matrix.length == 0 || this.matrix[0].length == 0;
     }
 
-    public Complex[][] getMatrix(){
+    public double[][] getMatrix(){
         return this.matrix;
     }
 
-    public void setElement(int row, int col, Complex element){
-        if(row < 0 || col < 0){
+    public void setElement(int row, int col, double element){
+        if (row < 0 || col < 0) {
             throw new ArithmeticException("Error: Row/Column must be greater than or equal to 1");
-        }
-        else if(this.rowColExceeded(row, col)){
+        } else if (this.rowColExceeded(row, col)) {
             throw new ArithmeticException("Error: Row/Column must not be greater than the matrix dimensions");
         }
 
         this.matrix[row][col] = element;
     }
 
-    public Complex getElement(int row, int col){
-        if(row < 0 || col < 0){
+    public double getElement(int row, int col){
+        if (row < 0 || col < 0) {
             throw new ArithmeticException("Error: Row/Column must be greater than or equal to 1");
-        }
-        else if(this.rowColExceeded(row, col)){
+        } else if (this.rowColExceeded(row, col)) {
             throw new ArithmeticException("Error: Row/Column must not be greater than the matrix dimensions");
         }
         return this.matrix[row][col];
     }
 
     public void inputMatrix(){
-
         if(this.isMatrixNull()){
             throw new IllegalArgumentException("Matrix is empty or null.");
         }
-
-        System.out.println("Enter values");
-        System.out.println("For complex numbers enter values in one of the following ways:");
-        System.out.println(" - As two values separated by a comma: (a, b) -> a + bi");
-        System.out.println(" - In standard complex format: a + bi or a - bi");
-        System.out.println();
-
-        for(int i=0; i<this.rows; i++){
-            for (int j=0; j<this.cols; j++){
-                this.matrix[i][j] = Complex.inputComplex("Enter value(" + (i + 1) + ", " + (j + 1) + "): ");
+        System.out.println("Enter values:");
+        for(int i = 0; i < this.rows; i++){
+            for (int j = 0; j < this.cols; j++){
+                this.matrix[i][j] = IO.getDouble("Enter value(" + (i + 1) + ", " + (j + 1) + "): ");
             }
         }
     }
 
     public boolean isMatrixZero() {
-        for (Complex[] row : this.matrix) {
-            for (Complex element : row) {
-                if (!element.isZero()) {
+        for (double[] row : this.matrix) {
+            for (double element : row) {
+                if (element != 0.0) {
                     return false;
                 }
             }
@@ -121,39 +111,31 @@ public class CMatrix extends Complex{
         return true;
     }
 
-    private static int computeMaxWidth(Complex[][] matrix, int precision) {
-        AtomicInteger maxWidth = new AtomicInteger(0);
+    private static int computeMaxWidth(double[][] matrix, int precision) {
+        int maxWidth = 0;
 
-        Thread widthCalculator = new Thread(() -> {
-            int localMaxWidth = 0;
-            for (Complex[] row : matrix) {
-                for (Complex num : row) {
-                    String formatted = formatComplex(num, precision);
-                    localMaxWidth = Math.max(localMaxWidth, formatted.length());
-                }
+        for (double[] row : matrix) {
+            for (double num : row) {
+                // Always show sign so we reserve space for negative symbol
+                String formatted = String.format("%." + precision + "f", num);
+                maxWidth = Math.max(maxWidth, formatted.length());
             }
-            maxWidth.set(localMaxWidth);
-        });
-
-        widthCalculator.start();
-        try {
-            widthCalculator.join(); // Wait for thread to finish
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
-        return maxWidth.get();
+        return maxWidth;
     }
 
     public void printMatrix(int precision) {
         if (this.isMatrixNull()) {
             throw new IllegalArgumentException("Matrix is empty or null.");
         }
-        int columnWidth = computeMaxWidth(matrix, precision) + 3; // Add padding
 
-        for (Complex[] row : matrix) {
-            for (Complex num : row) {
-                System.out.printf("%-" + columnWidth + "s", formatComplex(num, precision));
+        int columnWidth = computeMaxWidth(matrix, precision) + 1; // Padding
+
+        for (double[] row : matrix) {
+            for (double num : row) {
+                // Print without the plus sign
+                System.out.printf("%" + columnWidth + "." + precision + "f", num);
             }
             System.out.println();
         }
@@ -161,60 +143,60 @@ public class CMatrix extends Complex{
 
     public void printMatrix(){
         this.printMatrix(3);
+
     }
 
-    public CMatrix getCopyMatrix() {
+    public RMatrix getCopyMatrix() {
         if (this.isMatrixNull()) {
             throw new IllegalArgumentException("Matrix is empty or null.");
         }
 
         int rows = this.matrix.length;
         int cols = this.matrix[0].length;
-        Complex[][] copy = new Complex[rows][cols];
+        double[][] copy = new double[rows][cols];
 
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                copy[i][j] = new Complex(this.matrix[i][j]); // Deep Copy
-            }
+            // Deep Copy
+            System.arraycopy(this.matrix[i], 0, copy[i], 0, cols);
         }
-        return new CMatrix(copy);
+        return new RMatrix(copy);
     }
 
-    public CMatrix getTranspose(){
-        if(this.isMatrixNull()){
+    public RMatrix getTranspose() {
+        if (this.isMatrixNull()) {
             throw new IllegalArgumentException("Matrix is empty or null.");
         }
+
         int row = this.matrix.length;
         int column = this.matrix[0].length;
+        double[][] transpose = new double[column][row];
 
-        Complex[][] transpose = new Complex[column][row];
-        for(int i=0; i<row; i++){
-            for(int j=0; j<column; j++){
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
                 transpose[j][i] = this.matrix[i][j];
             }
         }
-        return new CMatrix(transpose);
+        return new RMatrix(transpose);
     }
 
-    public CMatrix constProduct(Complex element) {
-
+    public RMatrix constProduct(double element) {
         if (this.isMatrixNull()) {
             throw new IllegalArgumentException("Matrix is empty or null.");
         }
 
         int rows = this.matrix.length;
         int cols = this.matrix[0].length;
-        Complex[][] result = new Complex[rows][cols];
+        double[][] result = new double[rows][cols];
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                result[i][j] = ComplexMath.multiply(element, this.matrix[i][j]);
+                result[i][j] = element * this.matrix[i][j];
             }
         }
-        return new CMatrix(result);
+        return new RMatrix(result);
     }
 
-    public Complex getTrace() {
+    public double getTrace() {
         if (this.isMatrixNull()) {
             throw new IllegalArgumentException("Matrix is empty or null.");
         }
@@ -222,15 +204,15 @@ public class CMatrix extends Complex{
             throw new IllegalArgumentException("Trace does not exist because the matrix is not square.");
         }
 
-        Complex traceSum = Complex.ZERO; // Assuming Complex.ZERO exists
+        double traceSum = 0.0;
 
         for (int i = 0; i < this.matrix.length; i++) {
-            traceSum = ComplexMath.add(traceSum, this.matrix[i][i]); // Summing diagonal elements
+            traceSum += this.matrix[i][i]; // Summing diagonal elements
         }
         return traceSum;
     }
 
-    public CMatrix getCofactor(int elrow, int elcol) {
+    public RMatrix getCofactor(int elrow, int elcol) {
         if (this.isMatrixNull()) {
             throw new IllegalArgumentException("Matrix is empty or null.");
         }
@@ -249,7 +231,7 @@ public class CMatrix extends Complex{
         elrow -= 1;
         elcol -= 1;
 
-        Complex[][] cofactor = new Complex[n - 1][n - 1];
+        double[][] cofactor = new double[n - 1][n - 1];
 
         int cofactorRow = 0;
         for (int i = 0; i < n; i++) {
@@ -259,57 +241,54 @@ public class CMatrix extends Complex{
             for (int j = 0; j < n; j++) {
                 if (j == elcol) continue; // Skip the given column
 
-                // Use the copy constructor to avoid reference issues
-                cofactor[cofactorRow][cofactorCol++] = new Complex(this.matrix[i][j]);
+                cofactor[cofactorRow][cofactorCol++] = this.matrix[i][j];
             }
             cofactorRow++;
         }
-        return new CMatrix(cofactor);
+        return new RMatrix(cofactor);
     }
 
-    public Complex getDeterminant() {
+    public double getDeterminant() {
         int n = this.matrix.length;
 
         if (this.matrix.length != this.matrix[0].length) {
             throw new IllegalArgumentException("Determinant does not exist because the matrix is not square.");
         }
 
-        // Create copies of matrix for LU decomposition
-        Complex[][] U = new Complex[n][n];
-        Complex[][] L = new Complex[n][n];
+        // Create a copy of the matrix for LU decomposition
+        double[][] U = new double[n][n];
 
-        // Initialize U as a copy of the input matrix and L as the identity matrix
+        // Initialize U as a copy of the input matrix
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                U[i][j] = new Complex(this.matrix[i][j]); // Copy matrix elements
-                L[i][j] = (i == j) ? Complex.ONE : new Complex(); // Identity matrix
-            }
+            // Copy matrix elements
+            System.arraycopy(this.matrix[i], 0, U[i], 0, n);
         }
+
+        double determinant = 1.0;
 
         // LU Decomposition using Gaussian elimination
         for (int k = 0; k < n; k++) {
-            if (U[k][k].isZero()) {
-                return Complex.ZERO;
+            if (U[k][k] == 0.0) {
+                return 0.0; // Determinant is zero if a pivot element is zero
             }
 
             for (int i = k + 1; i < n; i++) {
-                L[i][k] = ComplexMath.divide(U[i][k], U[k][k]); // Compute L
+                double factor = U[i][k] / U[k][k];
 
                 for (int j = k; j < n; j++) {
-                    U[i][j] = ComplexMath.subtract(U[i][j], ComplexMath.multiply(L[i][k], U[k][j])); // Update U
+                    U[i][j] -= factor * U[k][j]; // Update U
                 }
             }
         }
         // Compute determinant as the product of diagonal elements of U
-        Complex determinant = Complex.ONE;
         for (int i = 0; i < n; i++) {
-            determinant = ComplexMath.multiply(determinant, U[i][i]);
+            determinant *= U[i][i];
         }
 
         return determinant;
     }
 
-    public CMatrix getAdjoint() {
+    public RMatrix getAdjoint() {
         if (this.isMatrixNull()) {
             throw new IllegalArgumentException("Matrix is empty or null.");
         }
@@ -318,25 +297,25 @@ public class CMatrix extends Complex{
             throw new IllegalArgumentException("Adjoint is only defined for square matrices.");
         }
 
-        Complex[][] adjoint = new Complex[n][n];
+        double[][] adjoint = new double[n][n];
 
         // Compute cofactor matrix and store it in transposed form
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 // Compute determinant of minor directly without recursion where possible
-                CMatrix cofactor = this.getCofactor(i+1, j+1);
-                Complex determinant = cofactor.getDeterminant();
+                RMatrix cofactor = this.getCofactor(i + 1, j + 1);
+                double determinant = cofactor.getDeterminant();
 
                 // Compute adjoint[j][i] (directly storing transposed cofactor)
-                Complex sign = ((i+1 + j+1) % 2 == 0) ? new Complex(1, 0) : new Complex(-1, 0);
-                adjoint[j][i] = ComplexMath.multiply(sign, determinant);
+                double sign = ((i + 1 + j + 1) % 2 == 0) ? 1.0 : -1.0;
+                adjoint[j][i] = sign * determinant;
             }
         }
 
-        return new CMatrix(adjoint);
+        return new RMatrix(adjoint);
     }
 
-    public CMatrix getInverseMatrix() {
+    public RMatrix getInverseMatrix() {
         if (this.isMatrixNull()) {
             throw new IllegalArgumentException("Matrix is empty or null.");
         }
@@ -347,12 +326,12 @@ public class CMatrix extends Complex{
         }
 
         // Create an augmented matrix [A | I]
-        Complex[][] augmented = new Complex[n][2 * n];
+        double[][] augmented = new double[n][2 * n];
         for (int i = 0; i < n; i++) {
             // Copy A
             System.arraycopy(this.matrix[i], 0, augmented[i], 0, n);
             for (int j = n; j < 2 * n; j++) {
-                augmented[i][j] = (i == j - n) ? Complex.ONE : Complex.ZERO; // Identity matrix
+                augmented[i][j] = (i == j - n) ? 1.0 : 0.0; // Identity matrix
             }
         }
 
@@ -361,48 +340,142 @@ public class CMatrix extends Complex{
             // Find the pivot row
             int pivotRow = i;
             for (int k = i + 1; k < n; k++) {
-                if (augmented[k][i].getMod() > augmented[pivotRow][i].getMod()) {
+                if (Math.abs(augmented[k][i]) > Math.abs(augmented[pivotRow][i])) {
                     pivotRow = k;
                 }
             }
 
             // Swap rows if necessary
             if (i != pivotRow) {
-                Complex[] temp = augmented[i];
+                double[] temp = augmented[i];
                 augmented[i] = augmented[pivotRow];
                 augmented[pivotRow] = temp;
             }
 
             // Check if the matrix is singular
-            if (augmented[i][i].equals(Complex.ZERO)) {
+            if (augmented[i][i] == 0.0) {
                 throw new IllegalArgumentException("Matrix is singular and cannot be inverted.");
             }
 
             // Normalize the pivot row
-            Complex pivotValue = augmented[i][i];
+            double pivotValue = augmented[i][i];
             for (int j = 0; j < 2 * n; j++) {
-                augmented[i][j] = ComplexMath.divide(augmented[i][j], pivotValue);
+                augmented[i][j] /= pivotValue;
             }
 
             // Eliminate the other rows
             for (int k = 0; k < n; k++) {
                 if (k != i) {
-                    Complex factor = augmented[k][i];
+                    double factor = augmented[k][i];
                     for (int j = 0; j < 2 * n; j++) {
-                        augmented[k][j] = ComplexMath.subtract(augmented[k][j], ComplexMath.multiply(factor, augmented[i][j]));
+                        augmented[k][j] -= factor * augmented[i][j];
                     }
                 }
             }
         }
 
         // Extract the inverse matrix from [I | A^-1]
-        Complex[][] inverseMatrix = new Complex[n][n];
+        double[][] inverseMatrix = new double[n][n];
         for (int i = 0; i < n; i++) {
             System.arraycopy(augmented[i], n, inverseMatrix[i], 0, n);
         }
 
-        return new CMatrix(inverseMatrix);
+        return new RMatrix(inverseMatrix);
     }
 
+    public void fillRandom(boolean useInteger, double min, double max) {
+        if (min > max) {
+            throw new IllegalArgumentException("Minimum value cannot be greater than maximum value.");
+        }
 
+        Random rand = new Random();
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                if (useInteger) {
+                    int randomInt = (int) (min + rand.nextInt((int) (max - min + 1)));
+                    this.matrix[i][j] = randomInt;
+                } else {
+                    double randomDouble = min + (max - min) * rand.nextDouble();
+                    this.matrix[i][j] = randomDouble;
+                }
+            }
+        }
+    }
+
+    public void zeroMatrix() {
+        if (rows <= 0 || cols <= 0) {
+            throw new IllegalArgumentException("Matrix dimensions must be positive.");
+        }
+
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                this.matrix[i][j] = 0.0;
+            }
+        }
+    }
+
+    public void identityMatrix() {
+        if (this.rows != this.cols) {
+            throw new IllegalArgumentException("Matrix must be square");
+        }
+
+        int size = this.rows;
+
+        this.matrix = new double[size][size];
+        for (int i = 0; i < size; i++) {
+            matrix[i][i] = 1.0;
+        }
+    }
+
+    public void negativeIdentityMatrix() {
+        if (this.rows != this.cols) {
+            throw new IllegalArgumentException("Matrix must be square");
+        }
+
+        int size = this.rows;
+        this.matrix = new double[size][size];
+        for (int i = 0; i < size; i++) {
+            matrix[i][i] = -1.0;
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        RMatrix other = (RMatrix) obj;
+        if (this.rows != other.rows || this.cols != other.cols) return false;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (Double.compare(this.matrix[i][j], other.matrix[i][j]) != 0) return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(rows, cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result = (int) (31 * result + matrix[i][j]);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Matrix ").append(rows).append("x").append(cols).append(":\n");
+        for (int i = 0; i < rows; i++) {
+            sb.append("[ ");
+            for (int j = 0; j < cols; j++) {
+                sb.append(String.format("%.4f", matrix[i][j]));
+                if (j < cols - 1) sb.append(", ");
+            }
+            sb.append(" ]\n");
+        }
+        return sb.toString();
+    }
 }
